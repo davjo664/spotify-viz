@@ -1,12 +1,13 @@
 const rootURL = 'http://127.0.0.1:3001';
 var auth = {};
 var selectedDate = '2019-02-21';
+var top200Chart = document.getElementById('top200-chart');
 //var globalChart = document.getElementById('global-chart');
 //var countryChart = document.getElementById('country-chart');
 
 window.onload = function(){
   getAccessToken();
-  //setGlobalChart(selectedDate);
+  setGlobalChart(selectedDate);
   //setCountryChart('cl', selectedDate)
 }
 
@@ -61,17 +62,30 @@ function setGlobalChart(selectedDate){
       return response.json();
     })
     .then(function(obj){
+      clearTop200Chart();
       for(var i = 2; i < obj.length; i++){
+        var row = obj[i];
+
+        var place = row[0];
+        var song = row[1];
+        var artist = row[2];
+        var streams = row[3];
+        var link = row[4];
+
         var a = document.createElement('a');
-        a.innerHTML = obj[i];
+        a.innerHTML = place + '. ' + artist + ' - ' + song;
+        //a.href = "javascript:onSongClick(" + "'" + link + "'" + ")";
         a.href = "#";
         a.className = "list-group-item list-group-item-action";
+        a['data-link'] = link;
+        a.addEventListener("click", onSongClick, false);
+
         var span = document.createElement('span');
         span.className = 'badge badge-secondary badge-pill';
-        span.innerHTML = numberWithCommas(obj[i][3]);
+        span.innerHTML = numberWithCommas(streams);
         span.style.float = 'right';
         a.appendChild(span);
-        globalChart.appendChild(a);
+        top200Chart.appendChild(a);
       }
     })
     .catch(function(err){
@@ -148,4 +162,16 @@ Date.prototype.YYYYMMDD = function(){
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function clearTop200Chart(){
+  while(top200Chart.firstChild){
+    top200Chart.removeChild(top200Chart.firstChild);
+  }
+}
+
+function onSongClick(){
+  console.log('onSongClick!');
+  console.log('link: ' + this['data-link']);
+  //this.className = "list-group-item list-group-item-action active";
 }
