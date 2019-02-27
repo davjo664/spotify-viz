@@ -11,6 +11,8 @@ var controls;
 var prevRotation;
 var geo;
 var root;
+var overlay;
+var textureCache;
 
 const searchField = document.querySelector('#search');
 const ul = document.querySelector('#results');
@@ -31,9 +33,9 @@ const typeHandler = function(e) {
           console.log(country);
           console.log(country.geometry.coordinates[0][0]);
           if (Array.isArray(country.geometry.coordinates[0][0][0])) {
-            goto(country.geometry.coordinates[0][0][0]);
+            goto(country.geometry.coordinates[0][0][0], country);
           } else {
-            goto(country.geometry.coordinates[0][0]);
+            goto(country.geometry.coordinates[0][0], country.id);
           }
         })
         var t = document.createTextNode(key);
@@ -60,7 +62,7 @@ d3.json('data/world.json', function (err, data) {
   var countries = topojsonFeature(data, data.objects.countries);
   geo = geodecoder(countries.features);
 
-  var textureCache = memoize(function (cntryID, color) {
+  textureCache = memoize(function (cntryID, color) {
     var country = geo.find(cntryID);
     return mapTexture(country, color);
   });
@@ -181,7 +183,7 @@ d3.json('data/world.json', function (err, data) {
   setEvents(camera, [baseGlobe], 'mousemove', 10);
 });
 
-function goto(pos) {
+function goto(pos, code) {
   console.log("click");
 
   if (controls.getRotated()) {
@@ -197,6 +199,18 @@ function goto(pos) {
   temp.position.copy(convertToXYZ(latlng, 900));
   temp.lookAt(root.position);
   temp.rotateY(Math.PI);
+
+   // Overlay the selected country
+   console.log(code);
+   var map = textureCache(code, 'red');
+   var material = new THREE.MeshPhongMaterial({map: map, transparent: true});
+   if (!overlay) {
+     overlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
+     overlay.rotation.y = Math.PI;
+     root.add(overlay);
+   } else {
+     overlay.material = material;
+   }
 
   for (let key in temp.rotation) {
     if (temp.rotation[key] - camera.rotation[key] > Math.PI) {
