@@ -30,7 +30,7 @@ const typeHandler = function(e) {
           var country = geo.find(this.textContent);
           console.log(country);
           console.log(country.geometry.coordinates[0][0]);
-          if (Array.isArray(country.geometry.coordinates[0][0])) {
+          if (Array.isArray(country.geometry.coordinates[0][0][0])) {
             goto(country.geometry.coordinates[0][0][0]);
           } else {
             goto(country.geometry.coordinates[0][0]);
@@ -78,6 +78,31 @@ d3.json('data/world.json', function (err, data) {
   let mapMaterial  = new THREE.MeshPhongMaterial({map: worldTexture, transparent: true});
   var baseMap = new THREE.Mesh(new THREE.SphereGeometry(200, segments, segments), mapMaterial);
   baseMap.rotation.y = Math.PI;
+
+  // HEADMAP attempt
+
+  // console.log("store");
+  // // console.log(geo.getStore());
+  // var overlayall = new THREE.Object3D();
+  // var position = new THREE.Vector2(0,0);
+  // var map;
+  // for (var key in geo.getStore()) {
+  //       // Overlay the selected country
+  //       if (map) {
+  //         console.log("copy")
+  //         renderer.copyTextureToTexture( position, map, textureCache(key, 'red' ));
+  //       } else {
+  //         console.log("create");
+  //         map = textureCache(key, 'red');
+  //       }
+  //       // root.add(overlay);
+  // }
+  
+  // var material = new THREE.MeshPhongMaterial({map: map, transparent: false});
+  // var overlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
+  // overlay.rotation.y = Math.PI;
+  // root.add(overlay);
+
 
   // create a container node and add the two meshes
   root = new THREE.Object3D();
