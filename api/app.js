@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const btoa = require('btoa');
 const csv = require('csvtojson');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 var client_id = '908fe46e46af4fd5a80f5751da42a56c';
 var client_secret = '24ceebd0b53a4b1f86d229b53789a399';
@@ -11,11 +12,13 @@ var client_auth = btoa(client_id + ':' + client_secret); // Converts to Base64
 console.log('Starting server');
 
 const app = express();
-const port = 3000;
+const port = 3001;
+
+app.use(cors());
 
 app.listen(port, () => console.log('App listening on port ' + port));
 
-app.use(express.static('public'));
+//app.use(express.static('public'));
 app.use(bodyParser.json());
 
 app.get('/get-access-token', function(req, res){
