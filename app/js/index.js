@@ -2,8 +2,6 @@ const rootURL = 'http://127.0.0.1:3001';
 var auth = {};
 var selectedDate = '2019-02-21';
 var top200Chart = document.getElementById('top200-chart');
-//var globalChart = document.getElementById('global-chart');
-//var countryChart = document.getElementById('country-chart');
 
 window.onload = function(){
   getAccessToken();
@@ -67,17 +65,17 @@ function setGlobalChart(selectedDate){
         var row = obj[i];
 
         var place = row[0];
-        var song = row[1];
+        var songName = row[1];
         var artist = row[2];
         var streams = row[3];
-        var link = row[4];
+        var url = row[4];
 
         var a = document.createElement('a');
-        a.innerHTML = place + '. ' + artist + ' - ' + song;
-        //a.href = "javascript:onSongClick(" + "'" + link + "'" + ")";
-        a.href = "#";
+        var placeMod = place + '. ';
+        a.innerHTML = placeMod.fontcolor("green").bold() + artist + ' - ' + songName;
         a.className = "list-group-item list-group-item-action";
-        a['data-link'] = link;
+        a['data-url'] = url;
+        a['data-spotifyID'] = last22Characters(url);
         a.addEventListener("click", onSongClick, false);
 
         var span = document.createElement('span');
@@ -172,6 +170,26 @@ function clearTop200Chart(){
 
 function onSongClick(){
   console.log('onSongClick!');
-  console.log('link: ' + this['data-link']);
-  //this.className = "list-group-item list-group-item-action active";
+  console.log('url: ' + this['data-url']);
+  console.log('spotifyID: ' + this['data-spotifyID']);
+  selectSong(this['data-spotifyID']);
+}
+
+function last22Characters(str){
+  return str.slice(-22);
+}
+
+function selectSong(spotifyID){
+  var songs = top200Chart.children;
+  for(var i = 0; i < songs.length; i++){
+    var song = songs[i];
+    if(song['data-spotifyID'] == spotifyID){
+      song.style.border = '1px solid green';
+      song.style['z-index'] = 2;
+    }
+    else{
+      song.style.border = '1px solid rgba(0,0,0,0.2)';
+      song.style['z-index'] = 1;
+    }
+  }
 }

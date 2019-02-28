@@ -3,19 +3,52 @@
   left: 0;
   bottom: 0;
   width: 38%;
-  height: 45%;
+  height: 49%;
   overflow-y: scroll;
-  font-size: 0.75em;
+  font-size: 0.8em;
 }
 
 .list-group#top200-chart .list-group-item{
   color: white;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.4);
+  padding: 1.6%;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 0px;
 }
 .list-group#top200-chart .list-group-item:hover{
-  background: rgba(155,155,155,0.2);
+  background: rgba(80,80,80,0.4);
+  cursor: pointer;
 }
 
 ::-webkit-scrollbar {
     display: none;
+}
+
+.chart-header{
+  position: absolute;
+  left: 0;
+  bottom: 49%;
+  width: 38%;
+  height: 40px;
+  color: white;
+  background-image: linear-gradient(to bottom, rgba(0,255,0,0.4), rgba(0,100,0,0.4));
+  padding-left: 0.8%;
+  padding-right: 0.8%;
+  border-radius: 0px;
+}
+
+.chart-header #chart-title{
+  font-size: 1.0em;
+  display: inline-block;
+  float: left;
+  line-height: 40px;
+  vertical-align: middle;
+}
+
+.chart-header #streams-text{
+  font-size: 0.95em;
+  display: inline-block;
+  float: right;
+  line-height: 40px;
+  vertical-align: middle;
 }
