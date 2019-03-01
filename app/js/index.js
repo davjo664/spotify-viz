@@ -65,7 +65,7 @@ function setGlobalChart(date){
         setTop200Chart(obj);
       }
       else{
-        console.log('No global chart found on date: ' + date);
+        console.log('No spotify global chart found on date: ' + date);
         alertNoDataFound();
       }
     })
@@ -109,7 +109,7 @@ function setCountryChart(isoCode, date){
         setTop200Chart(obj);
       }
       else{
-        console.log('No country chart found for isoCode: ' + isoCode + ' on date: ' + date);
+        console.log('No spotify data found for country isoCode: ' + isoCode + ' on date: ' + date);
         alertNoDataFound();
       }
     })

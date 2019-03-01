@@ -462,7 +462,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		//console.log( 'handleMouseMoveRotate' );
 
-		console.log(rotated);
+		//console.log(rotated);
 		rotated = true;
 		prevRotation = rotateDelta;
 		setTimeout(() => {

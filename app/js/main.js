@@ -13,31 +13,35 @@ var geo;
 var root;
 var overlay;
 var textureCache;
+var selectedCountry = null;
 
 const searchField = document.querySelector('#search');
 const ul = document.querySelector('#results');
 
 const typeHandler = function(e) {
-  console.log(e.target.value)
+  //console.log(e.target.value)
   ul.innerHTML = '';
   for (var key in geo.getStore()) {
       if (key.startsWith(e.target.value)) {
-        console.log(key);
+        //console.log(key);
         var li = document.createElement("li");
 
         var btn = document.createElement("BUTTON");
         btn.addEventListener('click', function() {
-          console.log("CLICK");
-          console.log(this.textContent);
+          //console.log("CLICK");
+          //console.log(this.textContent);
           var country = geo.find(this.textContent);
-          console.log(country);
-          console.log(country.geometry.coordinates[0][0]);
-          if (Array.isArray(country.geometry.coordinates[0][0][0])) {
-            goto(country.geometry.coordinates[0][0][0], country.id);
-          } else {
-            goto(country.geometry.coordinates[0][0], country.id);
+          //console.log(country);
+          //console.log(country.geometry.coordinates[0][0]);
+          if(country.id !== selectedCountry){
+            selectedCountry = country.id;
+            if (Array.isArray(country.geometry.coordinates[0][0][0])) {
+              goto(country.geometry.coordinates[0][0][0], country.id);
+            } else {
+              goto(country.geometry.coordinates[0][0], country.id);
+            }
           }
-        })
+        });
         var t = document.createTextNode(key);
         btn.appendChild(t);
         li.appendChild(btn);
@@ -118,10 +122,10 @@ d3.json('data/world.json', function (err, data) {
   controls.enableKeys = false;
 
   function onGlobeClick(event, pos) {
-    console.log("onGlobeClick");
+    //console.log("onGlobeClick");
 
     if (controls.getRotated()) {
-      console.log("rotated")
+      //console.log("rotated")
       return;
     }
 
@@ -129,18 +133,28 @@ d3.json('data/world.json', function (err, data) {
     var country = geo.search(latlng[0], latlng[1]);
 
     if (country !== null) {
-      console.log('country clicked! code: ' + country.code);
-      console.log('country: ' + JSON.stringify(country));
+      //console.log('country clicked! code: ' + country.code);
+      //console.log('country: ' + JSON.stringify(country));
       var countryData = geo.find(country.code);
-      console.log(countryData.geometry.coordinates[0][0]);
-      if (Array.isArray(countryData.geometry.coordinates[0][0][0])) {
-        goto(countryData.geometry.coordinates[0][0][0], countryData.id);
-      } else {
-        goto(countryData.geometry.coordinates[0][0], countryData.id);
+      //console.log(countryData.geometry.coordinates[0][0]);
+      if(countryData.id == selectedCountry){
+        //console.log('already selected');
+        selectedCountry = null;
+        clearOverlay();
+        setChartTitle('Top 200 - Global');
+        setGlobalChart(selectedDate);
+      }
+      else{
+        selectedCountry = countryData.id;
+        if (Array.isArray(countryData.geometry.coordinates[0][0][0])) {
+          goto(countryData.geometry.coordinates[0][0][0], countryData.id);
+        } else {
+          goto(countryData.geometry.coordinates[0][0], countryData.id);
+        }
       }
     }
     else{
-      console.log('no country here');
+      //console.log('no country here');
       // Get new camera position
       var temp = new THREE.Mesh();
       temp.position.copy(convertToXYZ(latlng, 900));
@@ -199,7 +213,7 @@ d3.json('data/world.json', function (err, data) {
 });
 
 function goto(pos, code) {
-  console.log('goto ' + code);
+  //console.log('goto ' + code);
 
   // Update the top200-chart
   setChartTitle('Top 200 - ' + code);
@@ -258,3 +272,8 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+
+function clearOverlay(){
+  root.remove(overlay);
+  overlay = null;
+}
