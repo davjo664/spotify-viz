@@ -130,6 +130,7 @@ d3.json('data/world.json', function (err, data) {
 
     if (country !== null) {
       console.log('country clicked! code: ' + country.code);
+      console.log('country: ' + JSON.stringify(country));
       var countryData = geo.find(country.code);
       console.log(countryData.geometry.coordinates[0][0]);
       if (Array.isArray(countryData.geometry.coordinates[0][0][0])) {
@@ -199,6 +200,17 @@ d3.json('data/world.json', function (err, data) {
 
 function goto(pos, code) {
   console.log('goto ' + code);
+
+  // Update the top200-chart
+  setChartTitle('Top 200 - ' + code);
+  var isoCode = isoCountries[code];
+  if(isoCode){
+    setCountryChart(isoCode.toLowerCase(), selectedDate);
+  }
+  else{
+    console.log('isocode for ' + code + ' was not found.');
+    alertNoDataFound();
+  }
 
   if (controls.getRotated()) {
     console.log("rotated")

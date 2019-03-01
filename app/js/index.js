@@ -2,11 +2,11 @@ const rootURL = 'http://127.0.0.1:3001';
 var auth = {};
 var selectedDate = '2019-02-21';
 var top200Chart = document.getElementById('top200-chart');
+var chartTitle = document.getElementById('chart-title');
 
 window.onload = function(){
   getAccessToken();
   setGlobalChart(selectedDate);
-  //setCountryChart('cl', selectedDate)
 }
 
 function getAccessToken(){
@@ -31,8 +31,9 @@ function getAccessToken(){
    });
 }
 
-function setGlobalChart(selectedDate){
-  var endDateObj = new Date(selectedDate);
+function setGlobalChart(date){
+  clearTop200Chart();
+  var endDateObj = new Date(date);
   // For some reason Spotify's URL for weekly charts is +1 day of the selected date
   endDateObj.setDate(endDateObj.getDate() + 1);
   // Convert to YYYY-MM-DD
@@ -60,30 +61,12 @@ function setGlobalChart(selectedDate){
       return response.json();
     })
     .then(function(obj){
-      clearTop200Chart();
-      for(var i = 2; i < obj.length; i++){
-        var row = obj[i];
-
-        var place = row[0];
-        var songName = row[1];
-        var artist = row[2];
-        var streams = row[3];
-        var url = row[4];
-
-        var a = document.createElement('a');
-        var placeMod = place + '. ';
-        a.innerHTML = placeMod.fontcolor("green").bold() + artist + ' - ' + songName;
-        a.className = "list-group-item list-group-item-action";
-        a['data-url'] = url;
-        a['data-spotifyID'] = last22Characters(url);
-        a.addEventListener("click", onSongClick, false);
-
-        var span = document.createElement('span');
-        span.className = 'badge badge-secondary badge-pill';
-        span.innerHTML = numberWithCommas(streams);
-        span.style.float = 'right';
-        a.appendChild(span);
-        top200Chart.appendChild(a);
+      if(Array.isArray(obj) && obj.length == 202){
+        setTop200Chart(obj);
+      }
+      else{
+        console.log('No global chart found on date: ' + date);
+        alertNoDataFound();
       }
     })
     .catch(function(err){
@@ -91,8 +74,9 @@ function setGlobalChart(selectedDate){
     });
 }
 
-function setCountryChart(countryID, selectedDate){
-  var endDateObj = new Date(selectedDate);
+function setCountryChart(isoCode, date){
+  clearTop200Chart();
+  var endDateObj = new Date(date);
   // For some reason Spotify's URL for weekly charts is +1 day of the selected date
   endDateObj.setDate(endDateObj.getDate() + 1);
   // Convert to YYYY-MM-DD
@@ -110,7 +94,7 @@ function setCountryChart(countryID, selectedDate){
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      "countryID": countryID,
+      "isoCode": isoCode,
       "startDate": startDate,
       "endDate": endDate
     })
@@ -121,12 +105,12 @@ function setCountryChart(countryID, selectedDate){
       return response.json();
     })
     .then(function(obj){
-      for(var i = 2; i < obj.length; i++){
-        var a = document.createElement('a');
-        a.innerHTML = obj[i];
-        a.href = "#";
-        a.className = "list-group-item list-group-item-action";
-        countryChart.appendChild(a);
+      if(Array.isArray(obj) && obj.length == 202){
+        setTop200Chart(obj);
+      }
+      else{
+        console.log('No country chart found for isoCode: ' + isoCode + ' on date: ' + date);
+        alertNoDataFound();
       }
     })
     .catch(function(err){
@@ -192,4 +176,43 @@ function selectSong(spotifyID){
       song.style['z-index'] = 1;
     }
   }
+}
+
+function setTop200Chart(data){
+  for(var i = 2; i < data.length; i++){
+    var row = data[i];
+
+    var place = row[0];
+    var songName = row[1];
+    var artist = row[2];
+    var streams = row[3];
+    var url = row[4];
+
+    var a = document.createElement('a');
+    var placeMod = place + '. ';
+    a.innerHTML = placeMod.fontcolor("green").bold() + artist + ' - ' + songName;
+    a.className = "list-group-item list-group-item-action";
+    a['data-url'] = url;
+    a['data-spotifyID'] = last22Characters(url);
+    a.addEventListener("click", onSongClick, false);
+
+    var span = document.createElement('span');
+    span.className = 'badge badge-secondary badge-pill';
+    span.innerHTML = numberWithCommas(streams);
+    span.style.float = 'right';
+    a.appendChild(span);
+    top200Chart.appendChild(a);
+  }
+}
+
+function setChartTitle(str){
+  chartTitle.innerHTML = str;
+}
+
+function alertNoDataFound(){
+  clearTop200Chart();
+  var li = document.createElement('li');
+  li.className = 'list-group-item';
+  li.innerHTML = 'No data found.';
+  top200Chart.appendChild(li);
 }

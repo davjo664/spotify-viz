@@ -74,10 +74,10 @@ app.post('/get-global-chart', function(req, res){
 
 app.post('/get-country-chart', function(req, res){
   console.log('Incoming request @ /get-country-chart');
-  var countryID = req.body.countryID;
+  var isoCode = req.body.isoCode;
   var startDate = req.body.startDate;
   var endDate = req.body.endDate;
-  var url = 'https://spotifycharts.com/regional/' + countryID + '/weekly/' + startDate + '--' + endDate + '/download';
+  var url = 'https://spotifycharts.com/regional/' + isoCode + '/weekly/' + startDate + '--' + endDate + '/download';
   console.log('Fetching ' + url);
   fetchTextAsync(url)
     .then(function(csvStr){
