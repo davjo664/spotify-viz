@@ -25,7 +25,7 @@ const typeHandler = function(e) {
         console.log(key);
         var li = document.createElement("li");
 
-        var btn = document.createElement("BUTTON");    
+        var btn = document.createElement("BUTTON");
         btn.addEventListener('click', function() {
           console.log("CLICK");
           console.log(this.textContent);
@@ -33,7 +33,7 @@ const typeHandler = function(e) {
           console.log(country);
           console.log(country.geometry.coordinates[0][0]);
           if (Array.isArray(country.geometry.coordinates[0][0][0])) {
-            goto(country.geometry.coordinates[0][0][0], country);
+            goto(country.geometry.coordinates[0][0][0], country.id);
           } else {
             goto(country.geometry.coordinates[0][0], country.id);
           }
@@ -99,7 +99,7 @@ d3.json('data/world.json', function (err, data) {
   //       }
   //       // root.add(overlay);
   // }
-  
+
   // var material = new THREE.MeshPhongMaterial({map: map, transparent: false});
   // var overlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
   // overlay.rotation.y = Math.PI;
@@ -118,35 +118,49 @@ d3.json('data/world.json', function (err, data) {
   controls.enableKeys = false;
 
   function onGlobeClick(event, pos) {
-    console.log("click");
+    console.log("onGlobeClick");
 
     if (controls.getRotated()) {
       console.log("rotated")
       return;
-    } 
-
-    var latlng = getEventCenter.call(this, event);
-    // Get pointc, convert to latitude/longitude
-
-    // Get new camera position
-    var temp = new THREE.Mesh();
-    temp.position.copy(convertToXYZ(latlng, 900));
-    temp.lookAt(root.position);
-    temp.rotateY(Math.PI);
-
-    for (let key in temp.rotation) {
-      if (temp.rotation[key] - camera.rotation[key] > Math.PI) {
-        temp.rotation[key] -= Math.PI * 2;
-      } else if (camera.rotation[key] - temp.rotation[key] > Math.PI) {
-        temp.rotation[key] += Math.PI * 2;
-      }
     }
 
-    var tweenPos = getTween.call(camera, 'position', temp.position);
-    d3.timer(tweenPos);
+    var latlng = getEventCenter.call(this, event);
+    var country = geo.search(latlng[0], latlng[1]);
 
-    var tweenRot = getTween.call(camera, 'rotation', temp.rotation);
-    d3.timer(tweenRot);
+    if (country !== null) {
+      console.log('country clicked! code: ' + country.code);
+      var countryData = geo.find(country.code);
+      console.log(countryData.geometry.coordinates[0][0]);
+      if (Array.isArray(countryData.geometry.coordinates[0][0][0])) {
+        goto(countryData.geometry.coordinates[0][0][0], countryData.id);
+      } else {
+        goto(countryData.geometry.coordinates[0][0], countryData.id);
+      }
+    }
+    else{
+      console.log('no country here');
+      // Get new camera position
+      var temp = new THREE.Mesh();
+      temp.position.copy(convertToXYZ(latlng, 900));
+      temp.lookAt(root.position);
+      temp.rotateY(Math.PI);
+
+      for (let key in temp.rotation) {
+        if (temp.rotation[key] - camera.rotation[key] > Math.PI) {
+          temp.rotation[key] -= Math.PI * 2;
+        } else if (camera.rotation[key] - temp.rotation[key] > Math.PI) {
+          temp.rotation[key] += Math.PI * 2;
+        }
+      }
+
+      var tweenPos = getTween.call(camera, 'position', temp.position);
+      d3.timer(tweenPos);
+
+      var tweenRot = getTween.call(camera, 'rotation', temp.rotation);
+      d3.timer(tweenRot);
+    }
+
   }
 
   function onGlobeMousemove(event) {
@@ -184,12 +198,12 @@ d3.json('data/world.json', function (err, data) {
 });
 
 function goto(pos, code) {
-  console.log("click");
+  console.log('goto ' + code);
 
   if (controls.getRotated()) {
     console.log("rotated")
     return;
-  } 
+  }
 
   var latlng = [pos[1],pos[0]];
   // Get pointc, convert to latitude/longitude
@@ -201,7 +215,6 @@ function goto(pos, code) {
   temp.rotateY(Math.PI);
 
    // Overlay the selected country
-   console.log(code);
    var map = textureCache(code, 'red');
    var material = new THREE.MeshPhongMaterial({map: map, transparent: true});
    if (!overlay) {
