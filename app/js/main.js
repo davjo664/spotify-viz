@@ -154,26 +154,27 @@ d3.json('data/world.json', function (err, data) {
       }
     }
     else{
+      return;
       //console.log('no country here');
       // Get new camera position
-      var temp = new THREE.Mesh();
-      temp.position.copy(convertToXYZ(latlng, 900));
-      temp.lookAt(root.position);
-      temp.rotateY(Math.PI);
+      // var temp = new THREE.Mesh();
+      // temp.position.copy(convertToXYZ(latlng, 900));
+      // temp.lookAt(root.position);
+      // temp.rotateY(Math.PI);
 
-      for (let key in temp.rotation) {
-        if (temp.rotation[key] - camera.rotation[key] > Math.PI) {
-          temp.rotation[key] -= Math.PI * 2;
-        } else if (camera.rotation[key] - temp.rotation[key] > Math.PI) {
-          temp.rotation[key] += Math.PI * 2;
-        }
-      }
+      // for (let key in temp.rotation) {
+      //   if (temp.rotation[key] - camera.rotation[key] > Math.PI) {
+      //     temp.rotation[key] -= Math.PI * 2;
+      //   } else if (camera.rotation[key] - temp.rotation[key] > Math.PI) {
+      //     temp.rotation[key] += Math.PI * 2;
+      //   }
+      // }
 
-      var tweenPos = getTween.call(camera, 'position', temp.position);
-      d3.timer(tweenPos);
+      // var tweenPos = getTween.call(camera, 'position', temp.position);
+      // d3.timer(tweenPos);
 
-      var tweenRot = getTween.call(camera, 'rotation', temp.rotation);
-      d3.timer(tweenRot);
+      // var tweenRot = getTween.call(camera, 'rotation', temp.rotation);
+      // d3.timer(tweenRot);
     }
 
   }
