@@ -22,8 +22,8 @@ const typeHandler = function(e) {
   //console.log(e.target.value)
   ul.innerHTML = '';
   for (var key in geo.getStore()) {
-      if (key.startsWith(e.target.value)) {
-        //console.log(key);
+      if (key.toLowerCase().startsWith(e.target.value.toLowerCase())) {
+        // console.log(key);
         var li = document.createElement("li");
 
         var btn = document.createElement("BUTTON");
