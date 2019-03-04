@@ -1,11 +1,15 @@
 const rootURL = 'http://127.0.0.1:3001';
 var auth = {};
-var selectedDate = '2019-02-21';
+var firstDate = new Date('2016-12-29');
+var lastDate = new Date('2019-02-28');
+var selectedDate = new Date('2019-02-28');
 var top200Chart = document.getElementById('top200-chart');
 var chartTitle = document.getElementById('chart-title');
+var timelineText = document.getElementById('timeline-text');
 
 window.onload = function(){
   getAccessToken();
+  setupTimeline();
   setGlobalChart(selectedDate);
 }
 
@@ -32,18 +36,16 @@ function getAccessToken(){
 }
 
 function setGlobalChart(date){
+  setChartTitle('Global');
   clearTop200Chart();
-  var endDateObj = new Date(date);
-  // For some reason Spotify's URL for weekly charts is +1 day of the selected date
-  endDateObj.setDate(endDateObj.getDate() + 1);
-  // Convert to YYYY-MM-DD
-  var endDate = endDateObj.YYYYMMDD();
 
-  var startDateObj = new Date(endDate);
+  var endDate = new Date(date);
+  // For some reason Spotify's URL for weekly charts is +1 day of the selected date
+  endDate.setDate(endDate.getDate() + 1);
+
+  var startDate = new Date(endDate);
   // Subtract 1 week
-  startDateObj.setDate(startDateObj.getDate() - 7);
-  // Convert to YYYY-MM-DD
-  var startDate = startDateObj.YYYYMMDD();
+  startDate.setDate(startDate.getDate() - 7);
 
   var options = {
     method: "POST",
@@ -51,8 +53,8 @@ function setGlobalChart(date){
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      "startDate": startDate,
-      "endDate": endDate
+      "startDate": startDate.YYYYMMDD(),
+      "endDate": endDate.YYYYMMDD()
     })
   };
 
@@ -62,10 +64,12 @@ function setGlobalChart(date){
     })
     .then(function(obj){
       if(Array.isArray(obj) && obj.length == 202){
-        setTop200Chart(obj);
+        if(!countrySelected()){
+          setTop200Chart(obj);
+        }
       }
       else{
-        console.log('No spotify global chart found on date: ' + date);
+        console.log('No Spotify global chart found on date: ' + date.YYYYMMDD());
         alertNoDataFound();
       }
     })
@@ -74,48 +78,55 @@ function setGlobalChart(date){
     });
 }
 
-function setCountryChart(isoCode, date){
+function setCountryChart(countryName, date){
+  setChartTitle(countryName);
   clearTop200Chart();
-  var endDateObj = new Date(date);
-  // For some reason Spotify's URL for weekly charts is +1 day of the selected date
-  endDateObj.setDate(endDateObj.getDate() + 1);
-  // Convert to YYYY-MM-DD
-  var endDate = endDateObj.YYYYMMDD();
 
-  var startDateObj = new Date(endDate);
-  // Subtract 1 week
-  startDateObj.setDate(startDateObj.getDate() - 7);
-  // Convert to YYYY-MM-DD
-  var startDate = startDateObj.YYYYMMDD();
+  var isoCode = isoCountries[countryName];
+  if(isoCode){
+    var endDate = new Date(date);
+    // For some reason Spotify's URL for weekly charts is +1 day of the selected date
+    endDate.setDate(endDate.getDate() + 1);
 
-  var options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      "isoCode": isoCode,
-      "startDate": startDate,
-      "endDate": endDate
-    })
-  };
+    var startDate = new Date(endDate);
+    // Subtract 1 week
+    startDate.setDate(startDate.getDate() - 7);
 
-  fetch(rootURL + '/get-country-chart', options)
-    .then(function(response){
-      return response.json();
-    })
-    .then(function(obj){
-      if(Array.isArray(obj) && obj.length == 202){
-        setTop200Chart(obj);
-      }
-      else{
-        console.log('No spotify data found for country isoCode: ' + isoCode + ' on date: ' + date);
-        alertNoDataFound();
-      }
-    })
-    .catch(function(err){
-      console.error(err);
-    });
+    var options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "isoCode": isoCode.toLowerCase(),
+        "startDate": startDate.YYYYMMDD(),
+        "endDate": endDate.YYYYMMDD()
+      })
+    };
+
+    fetch(rootURL + '/get-country-chart', options)
+      .then(function(response){
+        return response.json();
+      })
+      .then(function(obj){
+        if(Array.isArray(obj) && obj.length == 202){
+          if(countrySelected()){
+            setTop200Chart(obj);
+          }
+        }
+        else{
+          console.log('No Spotify data found for ' + countryName + ' on date: ' + date.yyyymmdd());
+          alertNoDataFound();
+        }
+      })
+      .catch(function(err){
+        console.error(err);
+      });
+  }
+  else{
+    console.log('isocode for ' + countryName + ' was not found.');
+    alertNoDataFound();
+  }
 }
 
 function hej(){
@@ -172,7 +183,7 @@ Date.prototype.YYYYMMDD = function(){
 };
 
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function clearTop200Chart(){
@@ -241,7 +252,8 @@ function setTop200Chart(data){
 }
 
 function setChartTitle(str){
-  chartTitle.innerHTML = str;
+  chartTitle.innerHTML = "Weekly Top 200 - " + str;
+  chartTitle['data-value'] = str;
 }
 
 function alertNoDataFound(){
@@ -420,4 +432,58 @@ function hideParallelCoords() {
     }
     parallelCoordsVisible = false;
   }, 500);
+}
+function setupTimeline(){
+  timelineText.innerHTML = formatDate(selectedDate);
+  var numberOfWeeks = daysBetween(firstDate, lastDate)/7;
+
+  $("#timeline").slider({
+    min: 0,
+    max: numberOfWeeks,
+    step: 1,
+    value: numberOfWeeks,
+    slide: function( event, ui ) {
+      var date = new Date(firstDate);
+      date.setDate(date.getDate() + ui.value*7);
+      timelineText.innerHTML = formatDate(date);
+    },
+    stop: function( event, ui ) {
+      var date = new Date(firstDate);
+      date.setDate(date.getDate() + ui.value*7);
+      timelineText.innerHTML = formatDate(date);
+      changeDate(date);
+    }
+  });
+}
+
+function daysBetween(date1, date2){
+  var diff = Math.abs(date2.getTime() - date1.getTime());
+  return Math.round(diff / (1000 * 60 * 60 * 24));
+}
+
+function changeDate(date){
+  selectedDate = date;
+  // Update top200 chart with the new date
+  if(countrySelected()){
+    setCountryChart(getSelectedCountry(), selectedDate);
+  }
+  else{
+    setGlobalChart(selectedDate);
+  }
+}
+
+function countrySelected(){
+  return (chartTitle['data-value'] !== "Global");
+}
+
+function getSelectedCountry(){
+  return chartTitle['data-value'];
+}
+
+function formatDate(date){
+  var yyyy = date.getFullYear();
+  var dd = date.getDate();
+  dd = (dd > 9 ? '' : '0') + dd;
+  var month = date.toLocaleString("en-us", { month: "short" });
+  return dd + '-' + month + '-' + yyyy;
 }

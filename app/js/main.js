@@ -144,7 +144,6 @@ d3.json('data/world.json', function (err, data) {
         //console.log('already selected');
         selectedCountry = null;
         clearOverlay();
-        setChartTitle('Top 200 - Global');
         setGlobalChart(selectedDate);
       }
       else{
@@ -225,15 +224,7 @@ function goto(pos, code) {
   //console.log('goto ' + code);
 
   // Update the top200-chart
-  setChartTitle('Top 200 - ' + code);
-  var isoCode = isoCountries[code];
-  if(isoCode){
-    setCountryChart(isoCode.toLowerCase(), selectedDate);
-  }
-  else{
-    console.log('isocode for ' + code + ' was not found.');
-    alertNoDataFound();
-  }
+  setCountryChart(code, selectedDate);
 
   if (controls.getRotated()) {
     console.log("rotated")
