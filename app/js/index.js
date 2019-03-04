@@ -136,6 +136,35 @@ function hej(){
     });
 }
 
+function getAudioFeaturesTop100(idArray) {
+  var options = {
+    method: "GET",
+    headers: {
+      "Authorization": auth.token_type + " " + auth.access_token
+    }
+  };
+
+  var idString = "";
+  for(var i = 0; i < idArray.length; i++) {
+    if (i != 0) {
+      idString += ","
+    }
+    idString += idArray[i]
+  }
+
+  fetch('https://api.spotify.com/v1/audio-features/?ids=' + idString, options)
+    .then(function(response){
+      console.log(response);
+      return response.json();
+    })
+    .then(function(obj){
+      // console.log(JSON.stringify(obj));
+      console.log(obj);
+      showParallelCoords(obj.audio_features);
+      
+    });
+}
+
 Date.prototype.YYYYMMDD = function(){
   var mm = this.getMonth() + 1;
   var dd = this.getDate();
@@ -179,6 +208,7 @@ function selectSong(spotifyID){
 }
 
 function setTop200Chart(data){
+  var spotifyIDArray = [];
   for(var i = 2; i < data.length; i++){
     var row = data[i];
 
@@ -202,7 +232,12 @@ function setTop200Chart(data){
     span.style.float = 'right';
     a.appendChild(span);
     top200Chart.appendChild(a);
+
+    if(spotifyIDArray.length < 100) {
+      spotifyIDArray.push(a['data-spotifyID']);
+    }
   }
+  getAudioFeaturesTop100(spotifyIDArray);
 }
 
 function setChartTitle(str){
@@ -211,8 +246,178 @@ function setChartTitle(str){
 
 function alertNoDataFound(){
   clearTop200Chart();
+  showParallelCoords([]);
   var li = document.createElement('li');
   li.className = 'list-group-item';
   li.innerHTML = 'No data found.';
   top200Chart.appendChild(li);
+}
+
+var parallelCoordsVisible = false;
+function createParallelCoords(json) {
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    var graphContainer = document.getElementById("graph-container");
+    var graphheader = document.getElementById("graph-header");
+    console.log(event.target.tagName)
+    if (parallelCoordsVisible && event.target === graphheader) {
+      hideParallelCoords();
+    } else if (!parallelCoordsVisible && event.target === graphheader) {
+      showParallelCoords();
+    }
+  }
+  var margin = {top: 30, right: 10, bottom: 10, left: 10},
+    width = window.innerWidth*0.6,
+    height = window.innerHeight*0.38;
+
+  var x = d3.scale.ordinal().rangePoints([0, width], 1),
+      y = {},
+      dragging = {};
+
+  var line = d3.svg.line(),
+      axis = d3.svg.axis().orient("left"),
+      background,
+      foreground;
+
+  var svg = d3.select("#graph-container").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  var dimensions = ["name","economy","cylinders","displacement","power","weight","mph","year"];
+    // Extract the list of dimensions and create a scale for each.
+    x.domain(dimensions = d3.keys(json[0]).filter(function(d) {
+      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode") 
+      && (y[d] = d3.scale.linear()
+          .domain(d3.extent(json, function(p) { return +p[d]; }))
+          .range([height, 0]));
+    }));
+
+    // Add grey background lines for context.
+    background = svg.append("g")
+        .attr("class", "background")
+      .selectAll("path")
+        .data(json)
+      .enter().append("path")
+        .attr("d", path);
+
+    // Add blue foreground lines for focus.
+    foreground = svg.append("g")
+        .attr("class", "foreground")
+      .selectAll("path")
+        .data(json)
+      .enter().append("path")
+        .attr("d", path);
+
+    // Add a group element for each dimension.
+    var g = svg.selectAll(".dimension")
+        .data(dimensions)
+      .enter().append("g")
+        .attr("class", "dimension")
+        .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+        .call(d3.behavior.drag()
+          .origin(function(d) { return {x: x(d)}; })
+          .on("dragstart", function(d) {
+            dragging[d] = x(d);
+            background.attr("visibility", "hidden");
+          })
+          .on("drag", function(d) {
+            dragging[d] = Math.min(width, Math.max(0, d3.event.x));
+            foreground.attr("d", path);
+            dimensions.sort(function(a, b) { return position(a) - position(b); });
+            x.domain(dimensions);
+            g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
+          })
+          .on("dragend", function(d) {
+            delete dragging[d];
+            transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
+            transition(foreground).attr("d", path);
+            background
+                .attr("d", path)
+              .transition()
+                .delay(500)
+                .duration(0)
+                .attr("visibility", null);
+          }));
+
+    // Add an axis and title.
+    g.append("g")
+        .attr("class", "axis")
+        .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+      .append("text")
+        .style("text-anchor", "middle")
+        .attr("y", -9)
+        .text(function(d) { return d; });
+
+    // Add and store a brush for each axis.
+    g.append("g")
+        .attr("class", "brush")
+        .each(function(d) {
+          d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
+        })
+      .selectAll("rect")
+        .attr("x", -8)
+        .attr("width", 16);
+
+  function position(d) {
+    var v = dragging[d];
+    return v == null ? x(d) : v;
+  }
+
+  function transition(g) {
+    return g.transition().duration(500);
+  }
+
+  // Returns the path for a given data point.
+  function path(d) {
+    return line(dimensions.map(function(p) { return [position(p), y[p](d[p])]; }));
+  }
+
+  function brushstart() {
+    d3.event.sourceEvent.stopPropagation();
+  }
+
+  // Handles a brush event, toggling the display of foreground lines.
+  function brush() {
+    var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
+        extents = actives.map(function(p) { return y[p].brush.extent(); });
+    foreground.style("display", function(d) {
+      return actives.every(function(p, i) {
+        return extents[i][0] <= d[p] && d[p] <= extents[i][1];
+      }) ? null : "none";
+    });
+  }
+}
+
+var prevJson;
+function showParallelCoords(json) {
+  var graphContainer = document.getElementById("graph-container");
+  if(parallelCoordsVisible) {
+    while (graphContainer.children.length > 1) {
+      graphContainer.removeChild(graphContainer.lastChild);
+    }
+  }
+  
+  graphContainer.style.height = window.innerHeight*0.49+40 + "px";
+  if (json) {
+    prevJson = json;
+    createParallelCoords(json);
+  } else {
+    createParallelCoords(prevJson);
+  }
+  setTimeout(() => {
+    parallelCoordsVisible = true;
+  }, 500);
+}
+
+function hideParallelCoords() {
+  console.log("hide");
+  var graphContainer = document.getElementById("graph-container");
+  graphContainer.style.height = "40px";
+  setTimeout(() => {
+    while (graphContainer.children.length > 1) {
+      graphContainer.removeChild(graphContainer.lastChild);
+    }
+    parallelCoordsVisible = false;
+  }, 500);
 }
