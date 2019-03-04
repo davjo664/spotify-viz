@@ -115,7 +115,7 @@ function setCountryChart(countryName, date){
           }
         }
         else{
-          console.log('No Spotify data found for ' + countryName + ' on date: ' + date.yyyymmdd());
+          console.log('No Spotify data found for ' + countryName + ' on date: ' + date.YYYYMMDD());
           alertNoDataFound();
         }
       })
@@ -172,7 +172,7 @@ function getAudioFeaturesTop100(idArray) {
       // console.log(JSON.stringify(obj));
       console.log(obj);
       showParallelCoords(obj.audio_features);
-      
+
     });
 }
 
@@ -219,6 +219,7 @@ function selectSong(spotifyID){
 }
 
 function setTop200Chart(data){
+  clearTop200Chart();
   var spotifyIDArray = [];
   for(var i = 2; i < data.length; i++){
     var row = data[i];
@@ -299,7 +300,7 @@ function createParallelCoords(json) {
   var dimensions = ["name","economy","cylinders","displacement","power","weight","mph","year"];
     // Extract the list of dimensions and create a scale for each.
     x.domain(dimensions = d3.keys(json[0]).filter(function(d) {
-      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode") 
+      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode")
       && (y[d] = d3.scale.linear()
           .domain(d3.extent(json, function(p) { return +p[d]; }))
           .range([height, 0]));
@@ -409,7 +410,7 @@ function showParallelCoords(json) {
       graphContainer.removeChild(graphContainer.lastChild);
     }
   }
-  
+
   graphContainer.style.height = window.innerHeight*0.49+40 + "px";
   if (json) {
     prevJson = json;
@@ -433,6 +434,7 @@ function hideParallelCoords() {
     parallelCoordsVisible = false;
   }, 500);
 }
+
 function setupTimeline(){
   timelineText.innerHTML = formatDate(selectedDate);
   var numberOfWeeks = daysBetween(firstDate, lastDate)/7;
