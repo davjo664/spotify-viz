@@ -5,15 +5,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/top200chart.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/timeline.css">
   </head>
   <body>
     <div class="chart-header" id="top200-chart-header">
-      <p id="chart-title">Top 200 - Global</p>
+      <p id="chart-title" data-value="Global">Weekly Top 200 - Global</p>
       <p id="streams-text">Streams</p>
     </div>
     <div class="list-group" id="top200-chart"></div>
+    <div id="timeline"></div>
+    <p id="timeline-text"></p>
     <div id="info">
       <h3>Interactive Maps - WebGL Demo</h3>
       <div id="msg">Mouseover a country...</div>
@@ -43,6 +47,8 @@
 
       System.import('js/main');
     </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script src="js/index.js"></script>
     <script src="js/iso-countries.js"></script>
   </body>
