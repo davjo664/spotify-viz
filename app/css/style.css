@@ -42,8 +42,112 @@ body, html {
   margin: auto;
 }
 
+/* #graph-container {
+  color: white;
+  transition: visibility 0.5s, opacity 0.5s linear;
+	opacity: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 80vw;
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  margin: auto;
+  border-radius: 20px;
+}  */
+
+/* PARALLEL COORDS */
+
 #link {
   position: absolute;
   bottom: 10px;
   left: 0px;
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+.background path {
+  fill: none;
+  stroke: #ddd;
+  shape-rendering: crispEdges;
+}
+
+.foreground path {
+  fill: none;
+  stroke: #1db954;
+}
+
+.brush .extent {
+  fill-opacity: .3;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+  cursor: move;
+}
+
+
+#graph-content{
+  font-size: 0.8em;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid rgba(0,0,0,0.2);
+}
+::-webkit-scrollbar {
+    display: none;
+}
+
+#graph-container {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 60%;
+  height: 40px;
+  overflow-y: scroll;
+  font-size: 0.8em;
+  background: rgba(0,0,0,0.8);
+  transition: height 0.5s linear;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.graph-header{
+    height: 40px;
+    color: white;
+    background-image: linear-gradient(to bottom, rgba(0,255,0,0.4), rgba(0,100,0,0.4));
+    padding-left: 0.8%;
+    padding-right: 0.8%;
+    border-radius: 0px;
+}
+
+.graph-header #graph-title{
+  font-size: 1.0em;
+  display: inline-block;
+  float: left;
+  line-height: 40px;
+  vertical-align: middle;
+}
+
+.graph-header #streams-text{
+  font-size: 0.95em;
+  display: inline-block;
+  float: right;
+  line-height: 40px;
+  vertical-align: middle;
 }

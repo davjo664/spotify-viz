@@ -469,7 +469,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 			if (prevRotation == rotateDelta) {
 				rotated = false;
 			}
-		}, 3000);
+		}, 1);
 
 		rotateEnd.set( event.clientX, event.clientY );
 
