@@ -1,7 +1,7 @@
 .ui-slider {
 	position: absolute;
 	right: 1%;
-  bottom: 14px;
+  top: 28px;
   width: 26%;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 0;
@@ -79,6 +79,6 @@
 	font-size: 1.0em;
 	color: white;
 	position: absolute;
-	bottom: 10px;
+	top: 2px;
 	right: 10.5%;
 }
