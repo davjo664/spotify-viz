@@ -3,7 +3,7 @@
   left: 0;
   bottom: 0;
   width: 38%;
-  height: 49%;
+  height: 43%;
   overflow-y: scroll;
   font-size: 0.8em;
 }
@@ -27,7 +27,7 @@
 .chart-header{
   position: absolute;
   left: 0;
-  bottom: 49%;
+  bottom: 43%;
   width: 38%;
   height: 40px;
   color: white;

@@ -6,6 +6,8 @@ var selectedDate = new Date('2019-02-28');
 var top200Chart = document.getElementById('top200-chart');
 var chartTitle = document.getElementById('chart-title');
 var timelineText = document.getElementById('timeline-text');
+var playButton = document.getElementById('play-button');
+var selectedSong = null;
 
 window.onload = function(){
   getAccessToken();
@@ -193,29 +195,45 @@ function clearTop200Chart(){
 }
 
 function onSongClick(){
-  console.log('onSongClick!');
-  console.log('url: ' + this['data-url']);
-  console.log('spotifyID: ' + this['data-spotifyID']);
-  selectSong(this['data-spotifyID']);
+  //console.log('onSongClick!');
+  //console.log('url: ' + this['data-url']);
+  //console.log('spotifyID: ' + this['data-spotifyID']);
+  if(songSelected()){
+    if(selectedSong == this){
+      deselectCurrentSong();
+    }
+    else{
+      deselectCurrentSong();
+      selectSong(this);
+    }
+  }
+  else{
+    selectSong(this);
+  }
+}
+
+function selectSong(song){
+  selectedSong = song;
+  setPlayButtonSource('https://open.spotify.com/embed/track/' + song['data-spotifyID']);
+  showPlayButton();
+  song.style.border = '1px solid green';
+  song.style['z-index'] = 2;
+}
+
+function deselectCurrentSong(){
+  selectedSong.style.border = '1px solid rgba(0,0,0,0.2)';
+  selectedSong.style['z-index'] = 1;
+  selectedSong = null;
+  setPlayButtonSource("");
+  hidePlayButton();
+}
+
+function songSelected(){
+  return (selectedSong !== null);
 }
 
 function last22Characters(str){
   return str.slice(-22);
-}
-
-function selectSong(spotifyID){
-  var songs = top200Chart.children;
-  for(var i = 0; i < songs.length; i++){
-    var song = songs[i];
-    if(song['data-spotifyID'] == spotifyID){
-      song.style.border = '1px solid green';
-      song.style['z-index'] = 2;
-    }
-    else{
-      song.style.border = '1px solid rgba(0,0,0,0.2)';
-      song.style['z-index'] = 1;
-    }
-  }
 }
 
 function setTop200Chart(data){
@@ -472,6 +490,9 @@ function changeDate(date){
   else{
     setGlobalChart(selectedDate);
   }
+  if(songSelected()){
+    deselectCurrentSong();
+  }
 }
 
 function countrySelected(){
@@ -488,4 +509,16 @@ function formatDate(date){
   dd = (dd > 9 ? '' : '0') + dd;
   var month = date.toLocaleString("en-us", { month: "short" });
   return dd + '-' + month + '-' + yyyy;
+}
+
+function setPlayButtonSource(src){
+  playButton.src = src;
+}
+
+function showPlayButton(){
+  playButton.style.display = 'block';
+}
+
+function hidePlayButton(){
+  playButton.style.display = 'none';
 }
