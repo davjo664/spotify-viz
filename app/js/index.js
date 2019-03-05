@@ -40,6 +40,9 @@ function getAccessToken(){
 function setGlobalChart(date){
   setChartTitle('Global');
   clearTop200Chart();
+  if(songSelected()){
+    deselectCurrentSong();
+  }
 
   var endDate = new Date(date);
   // For some reason Spotify's URL for weekly charts is +1 day of the selected date
@@ -83,6 +86,9 @@ function setGlobalChart(date){
 function setCountryChart(countryName, date){
   setChartTitle(countryName);
   clearTop200Chart();
+  if(songSelected()){
+    deselectCurrentSong();
+  }
 
   var isoCode = isoCountries[countryName];
   if(isoCode){
@@ -221,9 +227,11 @@ function selectSong(song){
 }
 
 function deselectCurrentSong(){
-  selectedSong.style.border = '1px solid rgba(0,0,0,0.2)';
-  selectedSong.style['z-index'] = 1;
-  selectedSong = null;
+  if(selectedSong){
+    selectedSong.style.border = '1px solid rgba(0,0,0,0.2)';
+    selectedSong.style['z-index'] = 1;
+    selectedSong = null;
+  }
   setPlayButtonSource("");
   hidePlayButton();
 }
