@@ -38,11 +38,12 @@ const typeHandler = function(e) {
           //console.log(country.geometry.coordinates[0][0]);
           if(country.id !== selectedCountry){
             selectedCountry = country.id;
-            if (Array.isArray(country.geometry.coordinates[0][0][0])) {
+            /*if (Array.isArray(country.geometry.coordinates[0][0][0])) {
               goto(country.geometry.coordinates[0][0][0], country.id);
             } else {
               goto(country.geometry.coordinates[0][0], country.id);
-            }
+            }*/
+            goToCountryCenter(country.id, country.geometry.coordinates);
           }
         });
         var t = document.createTextNode(key);
@@ -152,12 +153,10 @@ d3.json('data/world.json', function (err, data) {
       else{
         clearHoverOverlay();
         selectedCountry = countryData.id;
-        if (Array.isArray(countryData.geometry.coordinates[0][0][0])) {
-          console.log(countryData)
-          goto(countryData.geometry.coordinates[Math.floor(countryData.geometry.coordinates.length/2)][0][0], countryData.id);
-        } else {
-          goto(countryData.geometry.coordinates[0][0], countryData.id);
-        }
+        //console.log(countryData.geometry.coordinates)
+        goToCountryCenter(countryData.id, countryData.geometry.coordinates);
+        //goto(countryData.geometry.coordinates[Math.floor(countryData.geometry.coordinates.length/2)][0][0], countryData.id);
+        //goto(countryData.geometry.coordinates[0][0], countryData.id);
       }
     }
     else{
@@ -294,5 +293,30 @@ function setHoverOverlay(countryName){
     root.add(hoverOverlay);
   } else {
     hoverOverlay.material = material;
+  }
+}
+
+function averageCoordinate(arrOfCoords){
+  var avgCoord = [];
+  for(var i = 0; i < 2; i++){
+    var num = 0;
+    for(var j = 0; j < arrOfCoords.length; j++){
+      num += arrOfCoords[j][i];
+    }
+    avgCoord.push(num/arrOfCoords.length);
+  }
+  return avgCoord;
+}
+
+function goToCountryCenter(countryName, coords){
+  if (Array.isArray(coords[0][0][0])) {
+    var islandCentroids = [];
+    for(var i = 0; i < coords.length; i++){
+      islandCentroids.push(averageCoordinate(coords[i][0]));
+    }
+    var avgCentroid = averageCoordinate(islandCentroids);
+    goto(avgCentroid, countryName);
+  } else {
+    goto(averageCoordinate(coords[0]), countryName);
   }
 }
