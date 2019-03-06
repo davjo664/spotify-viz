@@ -11,10 +11,12 @@ var controls;
 var prevRotation;
 var geo;
 var root;
-var overlay;
+var selectOverlay;
+var hoverOverlay;
 var textureCache;
 var selectedCountry = null;
 var parallelCoordsVisible = false;
+var hoverCountry = null;
 
 const searchField = document.querySelector('#search');
 const ul = document.querySelector('#results');
@@ -58,8 +60,6 @@ d3.json('data/world.json', function (err, data) {
 
   d3.select("#loading").transition().duration(500)
     .style("opacity", 0).remove();
-
-  var currentCountry, overlay;
 
   var segments = 155; // number of vertices. Higher = better mouse accuracy
 
@@ -145,10 +145,12 @@ d3.json('data/world.json', function (err, data) {
       if(countryData.id == selectedCountry){
         //console.log('already selected');
         selectedCountry = null;
-        clearOverlay();
+        clearSelectOverlay();
+        setHoverOverlay(countryData.id);
         setGlobalChart(selectedDate);
       }
       else{
+        clearHoverOverlay();
         selectedCountry = countryData.id;
         if (Array.isArray(countryData.geometry.coordinates[0][0][0])) {
           console.log(countryData)
@@ -189,8 +191,6 @@ d3.json('data/world.json', function (err, data) {
     if (parallelCoordsVisible) {
       return;
     }
-    
-    var map, material;
 
     // Get pointc, convert to latitude/longitude
     var latlng = getEventCenter.call(this, event);
@@ -198,25 +198,23 @@ d3.json('data/world.json', function (err, data) {
     // Look for country at that latitude/longitude
     var country = geo.search(latlng[0], latlng[1]);
 
-    if (country !== null && country.code !== currentCountry) {
-
-      // Track the current country displayed
-      currentCountry = country.code;
-
-      // Update the html
-      d3.select("#msg").html(country.code);
-
-       // Overlay the selected country
-      map = textureCache(country.code, '#9E9E9E');
-      material = new THREE.MeshPhongMaterial({map: map, transparent: true});
-      if (!overlay) {
-        overlay = new THREE.Mesh(new THREE.SphereGeometry(200.8, 40, 40), material);
-        overlay.rotation.y = Math.PI;
-        root.add(overlay);
-      } else {
-        overlay.material = material;
+    if(country == null && hoverCountry){
+      d3.select("#hoverText").html("");
+      hoverCountry = null;
+      clearHoverOverlay();
+    }
+    else if(country !== null && country.code !== hoverCountry){
+      hoverCountry = country.code;
+      d3.select("#hoverText").html(country.code);
+      // Highlight the hovercountry (if it's not the selected country)
+      if(country.code !== selectedCountry){
+        setHoverOverlay(country.code);
+      }
+      else{
+        clearHoverOverlay();
       }
     }
+
   }
 
   setEvents(camera, [baseGlobe], 'click');
@@ -246,12 +244,12 @@ function goto(pos, code) {
    // Overlay the selected country
    var map = textureCache(code, '#1DB954');
    var material = new THREE.MeshPhongMaterial({map: map, transparent: true});
-   if (!overlay) {
-     overlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
-     overlay.rotation.y = Math.PI;
-     root.add(overlay);
+   if (!selectOverlay) {
+     selectOverlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
+     selectOverlay.rotation.y = Math.PI;
+     root.add(selectOverlay);
    } else {
-     overlay.material = material;
+     selectOverlay.material = material;
    }
 
   for (let key in temp.rotation) {
@@ -276,8 +274,25 @@ function animate() {
 }
 animate();
 
-function clearOverlay(){
-  root.remove(overlay);
-  overlay = null;
+function clearSelectOverlay(){
+  root.remove(selectOverlay);
+  selectOverlay = null;
 }
 
+function clearHoverOverlay(){
+  root.remove(hoverOverlay);
+  hoverOverlay = null;
+}
+
+function setHoverOverlay(countryName){
+  hoverCountry = countryName;
+  var map = textureCache(countryName, '#9E9E9E');
+  var material = new THREE.MeshPhongMaterial({map: map, transparent: true});
+  if (!hoverOverlay) {
+    hoverOverlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
+    hoverOverlay.rotation.y = Math.PI;
+    root.add(hoverOverlay);
+  } else {
+    hoverOverlay.material = material;
+  }
+}

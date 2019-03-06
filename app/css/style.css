@@ -156,3 +156,11 @@ svg {
   height: 80px;
   width: 100%;
 }
+
+#hoverText{
+  position: absolute;
+  top: 5px;
+  left: 32px;
+  font: 1.5em helvetica, arial;
+  color: lightgray;
+}
