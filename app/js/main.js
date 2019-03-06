@@ -151,7 +151,8 @@ d3.json('data/world.json', function (err, data) {
       else{
         selectedCountry = countryData.id;
         if (Array.isArray(countryData.geometry.coordinates[0][0][0])) {
-          goto(countryData.geometry.coordinates[0][0][0], countryData.id);
+          console.log(countryData)
+          goto(countryData.geometry.coordinates[Math.floor(countryData.geometry.coordinates.length/2)][0][0], countryData.id);
         } else {
           goto(countryData.geometry.coordinates[0][0], countryData.id);
         }

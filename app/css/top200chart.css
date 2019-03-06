@@ -7,9 +7,9 @@
 
 .list-group#top200-chart .list-group-item{
   color: white;
-  background: inherit;
   padding: 1.6%;
-  border: 1px solid rgba(0,0,0,0.2);
+  border: 1px solid rgb(56, 56, 56);
+  background: rgba(0,0,0,0.8);
   border-radius: 0px;
 }
 .list-group#top200-chart .list-group-item:hover{
@@ -29,9 +29,8 @@
   width: 38%;
   overflow-y: scroll;
   font-size: 0.8em;
-  background: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.0);
   transition: height 0.5s linear;
-  border: 1px solid rgba(0,0,0,0.2);
 }
 
 .chart-header{
@@ -57,4 +56,13 @@
   float: right;
   line-height: 40px;
   vertical-align: middle;
+}
+
+.no-data-found {
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  padding-top: 15%;
+  text-align: center;
+  color: grey;
+  font-size: 24px;
 }

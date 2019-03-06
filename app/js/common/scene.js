@@ -19,9 +19,10 @@ camera.position.set( 0, 0, 1100 );
 
 export var scene = new THREE.Scene();
 
-export var light = new THREE.HemisphereLight('#ffffff', '#666666', 1.5);
-light.position.set(0, 1000, 0);
-scene.add(light);
+export var light = new THREE.AmbientLight( 0x404040, 5 ); // soft white light
+scene.add( light );
+// light.position.set(0, 1000, 0);
+// scene.add(light);
 
 window.addEventListener('resize', onWindowResize, false);
 

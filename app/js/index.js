@@ -288,10 +288,10 @@ function setChartTitle(str){
 function alertNoDataFound(){
   clearTop200Chart();
   showParallelCoords([]);
-  var li = document.createElement('li');
-  li.className = 'list-group-item';
-  li.innerHTML = 'No data found.';
-  top200Chart.appendChild(li);
+  var div = document.createElement('div');
+  div.className = 'no-data-found';
+  div.innerHTML = 'No data found.';
+  top200Chart.appendChild(div);
 }
 
 var parallelCoordsVisible = false;
@@ -305,7 +305,7 @@ function createParallelCoords(json) {
       hideParallelCoords();
     } else if (!parallelCoordsVisible && event.target === graphheader) {
       showParallelCoords();
-      graphContainer.style.height = window.innerHeight*0.43+40 + "px";
+      graphContainer.style.height = window.innerHeight*0.3+40+80 + "px";
       parallelCoordsVisible = true;
     }
 
@@ -319,7 +319,7 @@ function createParallelCoords(json) {
   }
   var margin = {top: 30, right: 10, bottom: 10, left: 10},
     width = window.innerWidth*0.6,
-    height = window.innerHeight*0.34;
+    height = window.innerHeight*0.3;
 
   var x = d3.scale.ordinal().rangePoints([0, width], 1),
       y = {},
@@ -459,7 +459,7 @@ function showParallelCoords(json) {
 
 function hideParallelCoords() {
   var graphContainer = document.getElementById("graph-container");
-  graphContainer.style.height = "40px";
+  graphContainer.style.height = 40+80+"px";
   parallelCoordsVisible = false;
 }
 
@@ -535,12 +535,12 @@ function hidePlayButton(){
 
 function hideChart() {
   var chartContainer = document.getElementById("chart-container");
-  chartContainer.style.height = "40px";
+  chartContainer.style.height = 40+80+"px";
   chartIsVisible = false;
 }
 
 function showChart() {
   var chartContainer = document.getElementById("chart-container");
-  chartContainer.style.height = window.innerHeight*0.43+40 + "px";
+  chartContainer.style.height = window.innerHeight*0.3+40+80 + "px";
   chartIsVisible = true;
 }
