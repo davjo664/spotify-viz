@@ -156,3 +156,26 @@ svg {
   height: 80px;
   width: 100%;
 }
+
+#search {
+  background-color: rgba(0,0,0,0);
+  color: white;
+}
+
+#search:focus { 
+  border: inherit;
+  box-shadow: none;
+  border: 1px solid #FFF
+}
+
+.input-group-text {
+  background-color:  rgba(0, 255, 13, 0.25);
+  color: #ffffff;
+}
+
+.list-group-item-action {
+  background-color:  rgba(0, 255, 13, 0.25);
+}
+.list-group-item-action:hover {
+  background-color:  rgba(0, 255, 13, 0.1);
+}

@@ -21,14 +21,22 @@ const ul = document.querySelector('#results');
 
 const typeHandler = function(e) {
   //console.log(e.target.value)
+  console.log("typehandler");
   ul.innerHTML = '';
+  if (e.target.value === "") {
+    return;
+  }
   for (var key in geo.getStore()) {
+      // console.log(ul.getElementsByTagName("a").length);
+      if (ul.getElementsByTagName("a").length > 3) {
+        return;
+      }
       if (key.toLowerCase().startsWith(e.target.value.toLowerCase())) {
         // console.log(key);
-        var li = document.createElement("li");
-
-        var btn = document.createElement("BUTTON");
-        btn.addEventListener('click', function() {
+        var li = document.createElement("a");
+        li.className = "list-group-item list-group-item-action";
+        // var btn = document.createElement("BUTTON");
+        li.addEventListener('click', function() {
           //console.log("CLICK");
           //console.log(this.textContent);
           var country = geo.find(this.textContent);
@@ -44,8 +52,8 @@ const typeHandler = function(e) {
           }
         });
         var t = document.createTextNode(key);
-        btn.appendChild(t);
-        li.appendChild(btn);
+        // btn.appendChild(t);
+        li.appendChild(t);
         ul.appendChild(li);
 
       }
