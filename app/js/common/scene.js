@@ -14,8 +14,8 @@ document.body.appendChild(renderer.domElement);
 
 export var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 5000);
 // camera.position.z = 1000;
-camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
-camera.position.set( 0, 0, 1000 );
+// camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+camera.position.set( 0, 0, 1100 );
 
 export var scene = new THREE.Scene();
 

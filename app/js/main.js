@@ -121,6 +121,8 @@ d3.json('data/world.json', function (err, data) {
   // controls
   controls = new THREE.OrbitControls( camera, renderer.domElement );
   controls.enableKeys = false;
+  controls.minDistance = 800;
+  controls.maxDistance = 1400;
 
   function onGlobeClick(event, pos) {
     //console.log("onGlobeClick");
