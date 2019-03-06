@@ -17,6 +17,10 @@
   cursor: pointer;
 }
 
+.list-group#top200-chart .list-group-item.disabled:hover{
+  cursor: default;
+}
+
 ::-webkit-scrollbar {
     display: none;
 }

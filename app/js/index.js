@@ -289,7 +289,7 @@ function alertNoDataFound(){
   clearTop200Chart();
   showParallelCoords([]);
   var li = document.createElement('li');
-  li.className = 'list-group-item';
+  li.className = 'list-group-item disabled';
   li.innerHTML = 'No data found.';
   top200Chart.appendChild(li);
 }
