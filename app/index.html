@@ -8,20 +8,22 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="css/top200chart.css">
+    <link rel="stylesheet" href="css/chart.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/timeline.css">
   </head>
   <body>
     <div id="chart-container">
       <iframe class="spotify-play-button" id="play-button" src="" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-      <div class="chart-header" id="top200-chart-header">
-        <p id="chart-title" data-value="Global">Weekly Top 200 - Global</p>
+      <div class="chart-header" id="chart-header">
+        <p id="chart-title" data-value="Global">Weekly Top 100 - Global</p>
         <p id="streams-text">Streams</p>
       </div>
-      <div class="list-group" id="top200-chart"></div>
+      <div class="list-group" id="chart"></div>
     </div>
     <div id="timeline"></div>
     <p id="timeline-text"></p>
+    <h3 id="hoverText"></h3>
     <div id="info">
       <!--<h3>Interactive Maps - WebGL Demo</h3>
       <div id="msg">Mouseover a country...</div>

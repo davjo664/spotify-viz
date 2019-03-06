@@ -179,3 +179,11 @@ svg {
 .list-group-item-action:hover {
   background-color:  rgba(0, 255, 13, 0.1);
 }
+
+#hoverText{
+  position: absolute;
+  top: 5px;
+  left: 32px;
+  font: 1.5em helvetica, arial;
+  color: lightgray;
+}
