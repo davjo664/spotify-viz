@@ -1,7 +1,7 @@
 body, html {
   background: radial-gradient(circle at center, #7b7b7b 0%, black);
   margin: 0px;
-  font-family: helvetica, arial;
+  font-family: arial, helvetica;
   color: #333;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
