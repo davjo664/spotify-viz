@@ -38,11 +38,6 @@ const typeHandler = function(e) {
           //console.log(country.geometry.coordinates[0][0]);
           if(country.id !== selectedCountry){
             selectedCountry = country.id;
-            /*if (Array.isArray(country.geometry.coordinates[0][0][0])) {
-              goto(country.geometry.coordinates[0][0][0], country.id);
-            } else {
-              goto(country.geometry.coordinates[0][0], country.id);
-            }*/
             goToCountryCenter(country.id, country.geometry.coordinates);
           }
         });
@@ -153,10 +148,7 @@ d3.json('data/world.json', function (err, data) {
       else{
         clearHoverOverlay();
         selectedCountry = countryData.id;
-        //console.log(countryData.geometry.coordinates)
         goToCountryCenter(countryData.id, countryData.geometry.coordinates);
-        //goto(countryData.geometry.coordinates[Math.floor(countryData.geometry.coordinates.length/2)][0][0], countryData.id);
-        //goto(countryData.geometry.coordinates[0][0], countryData.id);
       }
     }
     else{
@@ -308,15 +300,23 @@ function averageCoordinate(arrOfCoords){
   return avgCoord;
 }
 
-function goToCountryCenter(countryName, coords){
-  if (Array.isArray(coords[0][0][0])) {
-    var islandCentroids = [];
-    for(var i = 0; i < coords.length; i++){
-      islandCentroids.push(averageCoordinate(coords[i][0]));
-    }
-    var avgCentroid = averageCoordinate(islandCentroids);
-    goto(avgCentroid, countryName);
-  } else {
-    goto(averageCoordinate(coords[0]), countryName);
+function goToCountryCenter(countryName, paths){
+  var path;
+  if(paths.length == 1){
+    path = paths[0];
   }
+  else{
+    path = longestPath(paths);
+  }
+  goto(averageCoordinate(path), countryName);
+}
+
+function longestPath(paths){
+  var longest = [];
+  for(var i = 0; i < paths.length; i++){
+    if(paths[i][0].length > longest.length){
+      longest = paths[i][0];
+    }
+  }
+  return longest;
 }
