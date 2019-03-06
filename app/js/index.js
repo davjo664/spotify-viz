@@ -3,12 +3,13 @@ var auth = {};
 var firstDate = new Date('2016-12-29');
 var lastDate = new Date('2019-02-28');
 var selectedDate = new Date('2019-02-28');
-var top200Chart = document.getElementById('top200-chart');
+var chart = document.getElementById('chart');
 var chartTitle = document.getElementById('chart-title');
 var timelineText = document.getElementById('timeline-text');
 var playButton = document.getElementById('play-button');
 var selectedSong = null;
 var chartIsVisible = false;
+var numberOfSongs = 100;
 
 window.onload = function(){
   getAccessToken();
@@ -40,7 +41,7 @@ function getAccessToken(){
 
 function setGlobalChart(date){
   setChartTitle('Global');
-  clearTop200Chart();
+  clearChart();
   if(songSelected()){
     deselectCurrentSong();
   }
@@ -71,7 +72,7 @@ function setGlobalChart(date){
     .then(function(obj){
       if(Array.isArray(obj) && obj.length == 202){
         if(!countrySelected()){
-          setTop200Chart(obj);
+          setChart(obj);
         }
       }
       else{
@@ -86,7 +87,7 @@ function setGlobalChart(date){
 
 function setCountryChart(countryName, date){
   setChartTitle(countryName);
-  clearTop200Chart();
+  clearChart();
   if(songSelected()){
     deselectCurrentSong();
   }
@@ -120,7 +121,7 @@ function setCountryChart(countryName, date){
       .then(function(obj){
         if(Array.isArray(obj) && obj.length == 202){
           if(countrySelected()){
-            setTop200Chart(obj);
+            setChart(obj);
           }
         }
         else{
@@ -196,9 +197,9 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function clearTop200Chart(){
-  while(top200Chart.firstChild){
-    top200Chart.removeChild(top200Chart.firstChild);
+function clearChart(){
+  while(chart.firstChild){
+    chart.removeChild(chart.firstChild);
   }
 }
 
@@ -246,10 +247,10 @@ function last22Characters(str){
   return str.slice(-22);
 }
 
-function setTop200Chart(data){
-  clearTop200Chart();
+function setChart(data){
+  clearChart();
   var spotifyIDArray = [];
-  for(var i = 2; i < data.length; i++){
+  for(var i = 2; i < numberOfSongs + 2; i++){
     var row = data[i];
 
     var place = row[0];
@@ -271,7 +272,7 @@ function setTop200Chart(data){
     span.innerHTML = numberWithCommas(streams);
     span.style.float = 'right';
     a.appendChild(span);
-    top200Chart.appendChild(a);
+    chart.appendChild(a);
 
     if(spotifyIDArray.length < 100) {
       spotifyIDArray.push(a['data-spotifyID']);
@@ -281,17 +282,17 @@ function setTop200Chart(data){
 }
 
 function setChartTitle(str){
-  chartTitle.innerHTML = "Weekly Top 200 - " + str;
+  chartTitle.innerHTML = "Weekly Top " + numberOfSongs + " - " + str;
   chartTitle['data-value'] = str;
 }
 
 function alertNoDataFound(){
-  clearTop200Chart();
+  clearChart();
   showParallelCoords([]);
   var div = document.createElement('div');
   div.className = 'no-data-found';
   div.innerHTML = 'No data found.';
-  top200Chart.appendChild(div);
+  chart.appendChild(div);
 }
 
 var parallelCoordsVisible = false;
@@ -309,7 +310,7 @@ function createParallelCoords(json) {
       parallelCoordsVisible = true;
     }
 
-    var chartHeader = document.getElementById("top200-chart-header");
+    var chartHeader = document.getElementById("chart-header");
     console.log(event.target.tagName)
     if (chartIsVisible && event.target === chartHeader) {
       hideChart();
@@ -493,7 +494,7 @@ function daysBetween(date1, date2){
 
 function changeDate(date){
   selectedDate = date;
-  // Update top200 chart with the new date
+  // Update chart with the new date
   if(countrySelected()){
     setCountryChart(getSelectedCountry(), selectedDate);
   }
