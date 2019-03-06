@@ -7,7 +7,7 @@
 
 .list-group#top200-chart .list-group-item{
   color: white;
-  background: rgba(0,0,0,0.4);
+  background: inherit;
   padding: 1.6%;
   border: 1px solid rgba(0,0,0,0.2);
   border-radius: 0px;
