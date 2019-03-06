@@ -460,7 +460,7 @@ function showParallelCoords(json) {
 
 function hideParallelCoords() {
   var graphContainer = document.getElementById("graph-container");
-  graphContainer.style.height = 40+80+"px";
+  graphContainer.style.height = 40+"px";
   parallelCoordsVisible = false;
 }
 
