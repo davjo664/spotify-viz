@@ -1,11 +1,8 @@
 .list-group#top200-chart{
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 38%;
-  height: 43%;
   overflow-y: scroll;
-  font-size: 0.8em;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .list-group#top200-chart .list-group-item{
@@ -24,14 +21,23 @@
     display: none;
 }
 
-.chart-header{
+#chart-container {
   position: absolute;
   left: 0;
-  bottom: 43%;
+  bottom: 0;
+  height: 40px;
   width: 38%;
+  overflow-y: scroll;
+  font-size: 0.8em;
+  background: rgba(0,0,0,0.8);
+  transition: height 0.5s linear;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.chart-header{
   height: 40px;
   color: white;
-  background-image: linear-gradient(to bottom, rgba(0,255,0,0.4), rgba(0,100,0,0.4));
+    background-image: linear-gradient(to bottom, #1DB954, rgba(0,100,0,0.4));
   padding-left: 0.8%;
   padding-right: 0.8%;
   border-radius: 0px;

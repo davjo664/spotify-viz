@@ -81,7 +81,7 @@ d3.json('data/world.json', function (err, data) {
   baseGlobe.addEventListener('mousemove', onGlobeMousemove);
 
   // add base map layer with all countries
-  let worldTexture = mapTexture(countries, '#1db954');
+  let worldTexture = mapTexture(countries, '#CFD8DC');
   let mapMaterial  = new THREE.MeshPhongMaterial({map: worldTexture, transparent: true});
   var baseMap = new THREE.Mesh(new THREE.SphereGeometry(200, segments, segments), mapMaterial);
   baseMap.rotation.y = Math.PI;
@@ -204,10 +204,10 @@ d3.json('data/world.json', function (err, data) {
       d3.select("#msg").html(country.code);
 
        // Overlay the selected country
-      map = textureCache(country.code, '#CDC290');
+      map = textureCache(country.code, '#9E9E9E');
       material = new THREE.MeshPhongMaterial({map: map, transparent: true});
       if (!overlay) {
-        overlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
+        overlay = new THREE.Mesh(new THREE.SphereGeometry(200.8, 40, 40), material);
         overlay.rotation.y = Math.PI;
         root.add(overlay);
       } else {
@@ -241,7 +241,7 @@ function goto(pos, code) {
   temp.rotateY(Math.PI);
 
    // Overlay the selected country
-   var map = textureCache(code, 'red');
+   var map = textureCache(code, '#1DB954');
    var material = new THREE.MeshPhongMaterial({map: map, transparent: true});
    if (!overlay) {
      overlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);

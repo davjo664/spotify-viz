@@ -1,5 +1,5 @@
 body, html {
-  background-color: #333;
+  background: radial-gradient(circle at center, #7b7b7b 0%, black);
   margin: 0px;
   font-family: helvetica, arial;
   color: #333;
@@ -130,7 +130,7 @@ svg {
 .graph-header{
     height: 40px;
     color: white;
-    background-image: linear-gradient(to bottom, rgba(0,255,0,0.4), rgba(0,100,0,0.4));
+    background-image: linear-gradient(to bottom, #1DB954, rgba(0,100,0,0.4));
     padding-left: 0.8%;
     padding-right: 0.8%;
     border-radius: 0px;

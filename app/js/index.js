@@ -8,6 +8,7 @@ var chartTitle = document.getElementById('chart-title');
 var timelineText = document.getElementById('timeline-text');
 var playButton = document.getElementById('play-button');
 var selectedSong = null;
+var chartIsVisible = false;
 
 window.onload = function(){
   getAccessToken();
@@ -180,6 +181,7 @@ function getAudioFeaturesTop100(idArray) {
       // console.log(JSON.stringify(obj));
       console.log(obj);
       showParallelCoords(obj.audio_features);
+      showChart();
 
     });
 }
@@ -301,13 +303,25 @@ function createParallelCoords(json) {
     console.log(event.target.tagName)
     if (parallelCoordsVisible && event.target === graphheader) {
       hideParallelCoords();
+      graphContainer.style.height = "40px";
+      parallelCoordsVisible = false;
     } else if (!parallelCoordsVisible && event.target === graphheader) {
       showParallelCoords();
+      graphContainer.style.height = window.innerHeight*0.43+40 + "px";
+      parallelCoordsVisible = true;
+    }
+
+    var chartHeader = document.getElementById("top200-chart-header");
+    console.log(event.target.tagName)
+    if (chartIsVisible && event.target === chartHeader) {
+      hideChart();
+    } else if (!chartIsVisible && event.target === chartHeader) {
+      showChart();
     }
   }
   var margin = {top: 30, right: 10, bottom: 10, left: 10},
     width = window.innerWidth*0.6,
-    height = window.innerHeight*0.38;
+    height = window.innerHeight*0.34;
 
   var x = d3.scale.ordinal().rangePoints([0, width], 1),
       y = {},
@@ -436,8 +450,6 @@ function showParallelCoords(json) {
       graphContainer.removeChild(graphContainer.lastChild);
     }
   }
-
-  graphContainer.style.height = window.innerHeight*0.49+40 + "px";
   if (json) {
     prevJson = json;
     createParallelCoords(json);
@@ -445,19 +457,18 @@ function showParallelCoords(json) {
     createParallelCoords(prevJson);
   }
   setTimeout(() => {
-    parallelCoordsVisible = true;
+    // parallelCoordsVisible = true;
   }, 500);
 }
 
 function hideParallelCoords() {
   console.log("hide");
   var graphContainer = document.getElementById("graph-container");
-  graphContainer.style.height = "40px";
   setTimeout(() => {
     while (graphContainer.children.length > 1) {
       graphContainer.removeChild(graphContainer.lastChild);
     }
-    parallelCoordsVisible = false;
+    // parallelCoordsVisible = false;
   }, 500);
 }
 
@@ -529,4 +540,16 @@ function showPlayButton(){
 
 function hidePlayButton(){
   playButton.style.display = 'none';
+}
+
+function hideChart() {
+  var chartContainer = document.getElementById("chart-container");
+  chartContainer.style.height = "40px";
+  chartIsVisible = false;
+}
+
+function showChart() {
+  var chartContainer = document.getElementById("chart-container");
+  chartContainer.style.height = window.innerHeight*0.43+40 + "px";
+  chartIsVisible = true;
 }
