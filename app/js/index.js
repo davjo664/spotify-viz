@@ -303,8 +303,6 @@ function createParallelCoords(json) {
     console.log(event.target.tagName)
     if (parallelCoordsVisible && event.target === graphheader) {
       hideParallelCoords();
-      graphContainer.style.height = "40px";
-      parallelCoordsVisible = false;
     } else if (!parallelCoordsVisible && event.target === graphheader) {
       showParallelCoords();
       graphContainer.style.height = window.innerHeight*0.43+40 + "px";
@@ -445,10 +443,8 @@ function createParallelCoords(json) {
 var prevJson;
 function showParallelCoords(json) {
   var graphContainer = document.getElementById("graph-container");
-  if(parallelCoordsVisible) {
-    while (graphContainer.children.length > 1) {
-      graphContainer.removeChild(graphContainer.lastChild);
-    }
+  while (graphContainer.children.length > 1) {
+    graphContainer.removeChild(graphContainer.lastChild);
   }
   if (json) {
     prevJson = json;
@@ -462,14 +458,9 @@ function showParallelCoords(json) {
 }
 
 function hideParallelCoords() {
-  console.log("hide");
   var graphContainer = document.getElementById("graph-container");
-  setTimeout(() => {
-    while (graphContainer.children.length > 1) {
-      graphContainer.removeChild(graphContainer.lastChild);
-    }
-    // parallelCoordsVisible = false;
-  }, 500);
+  graphContainer.style.height = "40px";
+  parallelCoordsVisible = false;
 }
 
 function setupTimeline(){
