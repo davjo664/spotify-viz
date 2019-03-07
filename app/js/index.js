@@ -231,7 +231,7 @@ function selectSong(song){
 
 function deselectCurrentSong(){
   if(selectedSong){
-    selectedSong.style.border = '1px solid rgba(0,0,0,0.2)';
+    selectedSong.style.border = '1px solid rgb(56, 56, 56)'; 
     selectedSong.style['z-index'] = 1;
     selectedSong = null;
   }
