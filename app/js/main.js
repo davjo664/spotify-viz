@@ -244,7 +244,7 @@ function goto(pos, code) {
    var map = textureCache(code, '#1DB954');
    var material = new THREE.MeshPhongMaterial({map: map, transparent: true});
    if (!selectOverlay) {
-     selectOverlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
+     selectOverlay = new THREE.Mesh(new THREE.SphereGeometry(200.8, 40, 40), material);
      selectOverlay.rotation.y = Math.PI;
      root.add(selectOverlay);
    } else {
@@ -288,7 +288,7 @@ function setHoverOverlay(countryName){
   var map = textureCache(countryName, '#9E9E9E');
   var material = new THREE.MeshPhongMaterial({map: map, transparent: true});
   if (!hoverOverlay) {
-    hoverOverlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
+    hoverOverlay = new THREE.Mesh(new THREE.SphereGeometry(200.8, 40, 40), material);
     hoverOverlay.rotation.y = Math.PI;
     root.add(hoverOverlay);
   } else {
