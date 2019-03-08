@@ -19,18 +19,18 @@ var parallelCoordsVisible = false;
 var hoverCountry = null;
 
 const searchField = document.querySelector('#search');
-const ul = document.querySelector('#results');
+const searchResults = document.querySelector('#results');
 
 const typeHandler = function(e) {
   //console.log(e.target.value)
   console.log("typehandler");
-  ul.innerHTML = '';
+  searchResults.innerHTML = '';
   if (e.target.value === "") {
     return;
   }
   for (var key in geo.getStore()) {
       // console.log(ul.getElementsByTagName("a").length);
-      if (ul.getElementsByTagName("a").length > 3) {
+      if (searchResults.getElementsByTagName("a").length > 3) {
         return;
       }
       if (key.toLowerCase().startsWith(e.target.value.toLowerCase())) {
@@ -47,14 +47,21 @@ const typeHandler = function(e) {
           if(country.id !== selectedCountry){
             selectedCountry = country.id;
             goToCountryCenter(country.id, country.geometry.coordinates);
+            resetSearch();
           }
         });
         var t = document.createTextNode(key);
         // btn.appendChild(t);
         li.appendChild(t);
-        ul.appendChild(li);
-
+        searchResults.appendChild(li);
       }
+  }
+}
+
+function resetSearch(){
+  searchField.value = "";
+  while(searchResults.firstChild){
+    searchResults.removeChild(searchResults.firstChild);
   }
 }
 

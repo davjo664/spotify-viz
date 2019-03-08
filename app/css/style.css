@@ -16,8 +16,8 @@ body, html {
 #info {
   color: white;
   position: absolute;
-  padding: 15px;
-  left: 15px;
+  padding: 12px;
+  left: 12px;
   top: 15px;
   z-index: 1;
 }
@@ -163,7 +163,7 @@ svg {
   color: white;
 }
 
-#search:focus { 
+#search:focus {
   border: inherit;
   box-shadow: none;
   border: 1px solid #FFF
@@ -183,8 +183,17 @@ svg {
 
 #hoverText{
   position: absolute;
-  top: 5px;
-  left: 32px;
+  top: 3px;
+  left: 25px;
   font: 1.5em helvetica, arial;
   color: lightgray;
+}
+
+#results a{
+  height: 42px;
+  cursor: pointer;
+}
+
+#info h1{
+  font-size: 30px;
 }
