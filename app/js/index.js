@@ -175,12 +175,12 @@ function getAudioFeaturesTop100(idArray) {
 
   fetch('https://api.spotify.com/v1/audio-features/?ids=' + idString, options)
     .then(function(response){
-      console.log(response);
+      //console.log(response);
       return response.json();
     })
     .then(function(obj){
-      // console.log(JSON.stringify(obj));
-      console.log(obj);
+      //console.log(JSON.stringify(obj));
+      //console.log(obj);
       showParallelCoords(obj.audio_features);
       showChart();
 
@@ -231,7 +231,7 @@ function selectSong(song){
 
 function deselectCurrentSong(){
   if(selectedSong){
-    selectedSong.style.border = '1px solid rgb(56, 56, 56)'; 
+    selectedSong.style.border = '1px solid rgb(56, 56, 56)';
     selectedSong.style['z-index'] = 1;
     selectedSong = null;
   }
@@ -296,7 +296,58 @@ function alertNoDataFound(){
 }
 
 var parallelCoordsVisible = false;
-function createParallelCoords(json) {
+function createParallelCoords(featuresArray) {
+  if(featuresArray.length > 0){
+    // Calculate the average values
+    var danceability = 0;
+    var energy = 0;
+    var loudness = 0;
+    var speechiness = 0;
+    var acousticness = 0;
+    var instrumentalness = 0;
+    var liveness = 0;
+    var valence = 0;
+    var tempo = 0;
+    var duration_ms = 0;
+
+    for(var i = 0; i < featuresArray.length; i++){
+      danceability += featuresArray[i].danceability;
+      energy += featuresArray[i].energy;
+      loudness += featuresArray[i].loudness;
+      speechiness += featuresArray[i].speechiness;
+      acousticness += featuresArray[i].acousticness;
+      instrumentalness += featuresArray[i].instrumentalness;
+      liveness += featuresArray[i].liveness;
+      valence += featuresArray[i].valence;
+      tempo += featuresArray[i].tempo;
+      duration_ms += featuresArray[i].duration_ms;
+      featuresArray[i].color = "#1db954";
+    }
+    danceability = danceability/featuresArray.length;
+    energy = energy/featuresArray.length;
+    loudness = loudness/featuresArray.length;
+    speechiness = speechiness/featuresArray.length;
+    acousticness = acousticness/featuresArray.length;
+    instrumentalness = instrumentalness/featuresArray.length;
+    liveness = liveness/featuresArray.length;
+    valence = valence/featuresArray.length;
+    tempo = tempo/featuresArray.length;
+    duration_ms = duration_ms/featuresArray.length;
+
+    var avgSong = {danceability: danceability,
+                  energy: energy,
+                  loudness: loudness,
+                  speechiness: speechiness,
+                  acousticness: acousticness,
+                  instrumentalness: instrumentalness,
+                  liveness: liveness,
+                  valence: valence,
+                  tempo: tempo,
+                  duration_ms: duration_ms,
+                  color: "#ff0000"};
+
+    featuresArray.push(avgSong);
+  }
   // When the user clicks anywhere outside of the modal, close it
   window.onclick = function(event) {
     var graphContainer = document.getElementById("graph-container");
@@ -338,10 +389,10 @@ function createParallelCoords(json) {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   var dimensions = ["name","economy","cylinders","displacement","power","weight","mph","year"];
     // Extract the list of dimensions and create a scale for each.
-    x.domain(dimensions = d3.keys(json[0]).filter(function(d) {
-      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode")
+    x.domain(dimensions = d3.keys(featuresArray[0]).filter(function(d) {
+      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode" && d!="color")
       && (y[d] = d3.scale.linear()
-          .domain(d3.extent(json, function(p) { return +p[d]; }))
+          .domain(d3.extent(featuresArray, function(p) { return +p[d]; }))
           .range([height, 0]));
     }));
 
@@ -349,7 +400,7 @@ function createParallelCoords(json) {
     background = svg.append("g")
         .attr("class", "background")
       .selectAll("path")
-        .data(json)
+        .data(featuresArray)
       .enter().append("path")
         .attr("d", path);
 
@@ -357,9 +408,12 @@ function createParallelCoords(json) {
     foreground = svg.append("g")
         .attr("class", "foreground")
       .selectAll("path")
-        .data(json)
+        .data(featuresArray)
       .enter().append("path")
-        .attr("d", path);
+        .attr("d", path)
+        .attr("stroke",function(d){
+          return d.color;
+        });
 
     // Add a group element for each dimension.
     var g = svg.selectAll(".dimension")
@@ -441,17 +495,17 @@ function createParallelCoords(json) {
   }
 }
 
-var prevJson;
-function showParallelCoords(json) {
+var prevFeaturesArray;
+function showParallelCoords(featuresArray) {
   var graphContainer = document.getElementById("graph-container");
   while (graphContainer.children.length > 1) {
     graphContainer.removeChild(graphContainer.lastChild);
   }
-  if (json) {
-    prevJson = json;
-    createParallelCoords(json);
+  if (featuresArray) {
+    prevFeaturesArray = featuresArray;
+    createParallelCoords(featuresArray);
   } else {
-    createParallelCoords(prevJson);
+    createParallelCoords(prevFeaturesArray);
   }
   setTimeout(() => {
     // parallelCoordsVisible = true;
