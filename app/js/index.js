@@ -322,6 +322,7 @@ function createParallelCoords(featuresArray) {
       tempo += featuresArray[i].tempo;
       duration_ms += featuresArray[i].duration_ms;
       featuresArray[i].color = "#1db954";
+      featuresArray[i].stroke_width = 1.5;
     }
     danceability = danceability/featuresArray.length;
     energy = energy/featuresArray.length;
@@ -344,7 +345,8 @@ function createParallelCoords(featuresArray) {
                   valence: valence,
                   tempo: tempo,
                   duration_ms: duration_ms,
-                  color: "#ff0000"};
+                  color: "#ff0000",
+                  stroke_width: 2};
 
     featuresArray.push(avgSong);
   }
@@ -390,7 +392,7 @@ function createParallelCoords(featuresArray) {
   var dimensions = ["name","economy","cylinders","displacement","power","weight","mph","year"];
     // Extract the list of dimensions and create a scale for each.
     x.domain(dimensions = d3.keys(featuresArray[0]).filter(function(d) {
-      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode" && d!="color")
+      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode" && d!="color" && d!="stroke_width")
       && (y[d] = d3.scale.linear()
           .domain(d3.extent(featuresArray, function(p) { return +p[d]; }))
           .range([height, 0]));
@@ -413,6 +415,9 @@ function createParallelCoords(featuresArray) {
         .attr("d", path)
         .attr("stroke",function(d){
           return d.color;
+        })
+        .attr("stroke-width", function(d){
+          return d.stroke_width;
         });
 
     // Add a group element for each dimension.
