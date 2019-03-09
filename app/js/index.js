@@ -309,6 +309,7 @@ function createParallelCoords(featuresArray) {
     var valence = 0;
     var tempo = 0;
     var duration_ms = 0;
+    var length_min = 0;
 
     for(var i = 0; i < featuresArray.length; i++){
       danceability += featuresArray[i].danceability;
@@ -321,6 +322,10 @@ function createParallelCoords(featuresArray) {
       valence += featuresArray[i].valence;
       tempo += featuresArray[i].tempo;
       duration_ms += featuresArray[i].duration_ms;
+
+      featuresArray[i].length_min = featuresArray[i].duration_ms/60000;
+      length_min += featuresArray[i].length_min;
+
       featuresArray[i].color = "#1db954";
       featuresArray[i].stroke_width = 1.5;
     }
@@ -334,6 +339,7 @@ function createParallelCoords(featuresArray) {
     valence = valence/featuresArray.length;
     tempo = tempo/featuresArray.length;
     duration_ms = duration_ms/featuresArray.length;
+    length_min = length_min/featuresArray.length;
 
     var avgSong = {danceability: danceability,
                   energy: energy,
@@ -345,16 +351,18 @@ function createParallelCoords(featuresArray) {
                   valence: valence,
                   tempo: tempo,
                   duration_ms: duration_ms,
+                  length_min: length_min,
                   color: "#ff0000",
                   stroke_width: 2};
 
     featuresArray.push(avgSong);
   }
+
   // When the user clicks anywhere outside of the modal, close it
   window.onclick = function(event) {
     var graphContainer = document.getElementById("graph-container");
     var graphheader = document.getElementById("graph-header");
-    console.log(event.target.tagName)
+    //console.log(event.target.tagName)
     if (parallelCoordsVisible && event.target === graphheader) {
       hideParallelCoords();
     } else if (!parallelCoordsVisible && event.target === graphheader) {
@@ -364,7 +372,7 @@ function createParallelCoords(featuresArray) {
     }
 
     var chartHeader = document.getElementById("chart-header");
-    console.log(event.target.tagName)
+    //console.log(event.target.tagName)
     if (chartIsVisible && event.target === chartHeader) {
       hideChart();
     } else if (!chartIsVisible && event.target === chartHeader) {
@@ -392,7 +400,7 @@ function createParallelCoords(featuresArray) {
   var dimensions = ["name","economy","cylinders","displacement","power","weight","mph","year"];
     // Extract the list of dimensions and create a scale for each.
     x.domain(dimensions = d3.keys(featuresArray[0]).filter(function(d) {
-      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode" && d!="color" && d!="stroke_width")
+      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode" && d!="color" && d!="stroke_width" && d!="duration_ms")
       && (y[d] = d3.scale.linear()
           .domain(d3.extent(featuresArray, function(p) { return +p[d]; }))
           .range([height, 0]));
@@ -458,7 +466,14 @@ function createParallelCoords(featuresArray) {
       .append("text")
         .style("text-anchor", "middle")
         .attr("y", -9)
-        .text(function(d) { return d; });
+        .text(function(d) {
+          if(d == "length_min"){
+            return "Length (min)";
+          }
+          else{
+            return bigFirstLetter(d);
+          }
+        });
 
     // Add and store a brush for each axis.
     g.append("g")
@@ -603,4 +618,8 @@ function showChart() {
   var chartContainer = document.getElementById("chart-container");
   chartContainer.style.height = window.innerHeight*0.3+40+80 + "px";
   chartIsVisible = true;
+}
+
+function bigFirstLetter(str){
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
