@@ -225,15 +225,33 @@ function selectSong(song){
   selectedSong = song;
   setPlayButtonSource('https://open.spotify.com/embed/track/' + song['data-spotifyID']);
   showPlayButton();
-  song.style.border = '1px solid green';
+  song.style.border = '1px solid rgba(255,255,255,0.6)';
+  song.style['box-shadow'] = 'inset 0 0 3px #ffffff';
+  song.style.background = 'rgba(80,80,80,0.8)';
   song.style['z-index'] = 2;
+
+  for(var i = 0; i < prevFeaturesArray.length; i++){
+    if(prevFeaturesArray[i].uri && song['data-spotifyID'] == last22Characters(prevFeaturesArray[i].uri)){
+      prevFeaturesArray[i].selected = true;
+    }
+    else{
+      prevFeaturesArray[i].selected = false;
+    }
+  }
+  showParallelCoords();
 }
 
 function deselectCurrentSong(){
   if(selectedSong){
     selectedSong.style.border = '1px solid rgb(56, 56, 56)';
+    selectedSong.style['box-shadow'] = 'none';
+    selectedSong.style.background = 'rgba(0,0,0,0.8)';
     selectedSong.style['z-index'] = 1;
     selectedSong = null;
+    for(var i = 0; i < prevFeaturesArray.length; i++){
+      prevFeaturesArray[i].selected = false;
+    }
+    showParallelCoords();
   }
   setPlayButtonSource("");
   hidePlayButton();
@@ -297,6 +315,8 @@ function alertNoDataFound(){
 
 var parallelCoordsVisible = false;
 function createParallelCoords(featuresArray) {
+  var finalArray = featuresArray;
+  var selectedIndex = null;
   if(featuresArray.length > 0){
     // Calculate the average values
     var danceability = 0;
@@ -323,12 +343,26 @@ function createParallelCoords(featuresArray) {
       tempo += featuresArray[i].tempo;
       duration_ms += featuresArray[i].duration_ms;
 
-      featuresArray[i].length_min = featuresArray[i].duration_ms/60000;
-      length_min += featuresArray[i].length_min;
+      finalArray[i].length_min = featuresArray[i].duration_ms/60000;
+      length_min += finalArray[i].length_min;
 
-      featuresArray[i].color = "#1db954";
-      featuresArray[i].stroke_width = 1.5;
+      if(featuresArray[i].selected){
+        finalArray[i].color = "#ffffff";
+        finalArray[i].stroke_width = 2;
+        selectedIndex = i;
+      }
+      else{
+        finalArray[i].color = "#1db954";
+        finalArray[i].stroke_width = 1.5;
+      }
+
+      finalArray[i].stroke_dash = "0,0";
     }
+    // Move selected song to the end of the array to make sure it's drawn infront of the others
+    if(selectedIndex !== null){
+      finalArray.push(finalArray.splice(selectedIndex, 1)[0]);
+    }
+
     danceability = danceability/featuresArray.length;
     energy = energy/featuresArray.length;
     loudness = loudness/featuresArray.length;
@@ -353,9 +387,11 @@ function createParallelCoords(featuresArray) {
                   duration_ms: duration_ms,
                   length_min: length_min,
                   color: "#ff0000",
-                  stroke_width: 2};
+                  stroke_width: 2,
+                  stroke_dash: "6,3",
+                  selected: false};
 
-    featuresArray.push(avgSong);
+    finalArray.push(avgSong);
   }
 
   // When the user clicks anywhere outside of the modal, close it
@@ -399,10 +435,10 @@ function createParallelCoords(featuresArray) {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   var dimensions = ["name","economy","cylinders","displacement","power","weight","mph","year"];
     // Extract the list of dimensions and create a scale for each.
-    x.domain(dimensions = d3.keys(featuresArray[0]).filter(function(d) {
-      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode" && d!="color" && d!="stroke_width" && d!="duration_ms")
+    x.domain(dimensions = d3.keys(finalArray[0]).filter(function(d) {
+      return (d != "name" && d!= "analysis_url" && d!= "id" && d!= "track_href" && d!= "type" && d!= "uri" && d!= "key" && d!= "time_signature" && d!= "mode" && d!="color" && d!="stroke_width" && d!="duration_ms" && d!="selected" && d!="stroke_dash")
       && (y[d] = d3.scale.linear()
-          .domain(d3.extent(featuresArray, function(p) { return +p[d]; }))
+          .domain(d3.extent(finalArray, function(p) { return +p[d]; }))
           .range([height, 0]));
     }));
 
@@ -410,7 +446,7 @@ function createParallelCoords(featuresArray) {
     background = svg.append("g")
         .attr("class", "background")
       .selectAll("path")
-        .data(featuresArray)
+        .data(finalArray)
       .enter().append("path")
         .attr("d", path);
 
@@ -418,7 +454,7 @@ function createParallelCoords(featuresArray) {
     foreground = svg.append("g")
         .attr("class", "foreground")
       .selectAll("path")
-        .data(featuresArray)
+        .data(finalArray)
       .enter().append("path")
         .attr("d", path)
         .attr("stroke",function(d){
@@ -426,6 +462,9 @@ function createParallelCoords(featuresArray) {
         })
         .attr("stroke-width", function(d){
           return d.stroke_width;
+        })
+        .style("stroke-dasharray", function(d){
+          return d.stroke_dash;
         });
 
     // Add a group element for each dimension.

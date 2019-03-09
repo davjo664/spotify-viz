@@ -14,7 +14,7 @@
   border-radius: 0px;
 }
 .list-group#chart .list-group-item:hover{
-  background: rgba(80,80,80,0.4);
+  background: rgba(60,60,60,0.8) !important;
   cursor: pointer;
 }
 
