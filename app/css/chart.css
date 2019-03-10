@@ -42,25 +42,31 @@
   height: 40px;
   color: white;
     background-image: linear-gradient(to bottom, #1DB954, rgba(0,100,0,0.4));
-  padding-left: 0.8%;
-  padding-right: 0.8%;
+  /*padding-left: 0.8%;
+  padding-right: 0.8%;*/
   border-radius: 0px;
 }
 
+.chart-header:hover{
+  cursor: pointer;
+}
+
 .chart-header #chart-title{
-  font-size: 1.0em;
+  font-size: 14px;
   display: inline-block;
   float: left;
   line-height: 40px;
   vertical-align: middle;
+  padding-left: 12px;
 }
 
 .chart-header #streams-text{
-  font-size: 0.95em;
+  font-size: 14px;
   display: inline-block;
   float: right;
   line-height: 40px;
   vertical-align: middle;
+  padding-right: 12px;
 }
 
 .no-data-found {
