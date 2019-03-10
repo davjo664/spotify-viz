@@ -1,8 +1,8 @@
 const rootURL = 'http://127.0.0.1:3001';
 var auth = {};
 var firstDate = new Date('2016-12-29');
-var lastDate = new Date('2019-02-28');
-var selectedDate = new Date('2019-02-28');
+var lastDate = new Date('2019-03-07');
+var selectedDate;
 var chart = document.getElementById('chart');
 var chartTitle = document.getElementById('chart-title');
 var timelineText = document.getElementById('timeline-text');
@@ -12,6 +12,7 @@ var chartIsVisible = false;
 var numberOfSongs = 100;
 
 window.onload = function(){
+  selectedDate = new Date(lastDate);
   getAccessToken();
   setupTimeline();
   setGlobalChart(selectedDate);
