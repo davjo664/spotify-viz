@@ -225,7 +225,7 @@ function onSongClick(){
 function selectSong(song){
   selectedSong = song;
   setPlayButtonSource('https://open.spotify.com/embed/track/' + song['data-spotifyID']);
-  showPlayButton();
+  //showPlayButton();
   song.style.border = '1px solid rgba(255,255,255,0.7)';
   song.style['box-shadow'] = 'inset 0 0 3px #ffffff';
   song.style.background = 'rgba(40,40,40,0.8)';
@@ -255,7 +255,7 @@ function deselectCurrentSong(){
     showParallelCoords();
   }
   setPlayButtonSource("");
-  hidePlayButton();
+  //hidePlayButton();
 }
 
 function songSelected(){
