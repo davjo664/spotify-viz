@@ -314,6 +314,34 @@ function alertNoDataFound(){
   chart.appendChild(div);
 }
 
+window.onclick = function(event) {
+  var graphContainer = document.getElementById("graph-container");
+  var graphheader = document.getElementById("graph-header");
+  var graphTitle = document.getElementById('graph-title');
+  //console.log(event.target.tagName)
+  if(event.target === graphheader || event.target === graphTitle){
+    if (parallelCoordsVisible) {
+      hideParallelCoords();
+    } else if (!parallelCoordsVisible) {
+      showParallelCoords();
+      graphContainer.style.height = window.innerHeight*0.3+40+80 + "px";
+      parallelCoordsVisible = true;
+    }
+  }
+
+  var chartHeader = document.getElementById("chart-header");
+  var chartTitle = document.getElementById('chart-title');
+  var streamsText = document.getElementById('streams-text');
+  //console.log(event.target.tagName)
+  if(event.target === chartHeader || event.target === chartTitle || event.target === streamsText){
+    if (chartIsVisible) {
+      hideChart();
+    } else if (!chartIsVisible) {
+      showChart();
+    }
+  }
+}
+
 var parallelCoordsVisible = false;
 function createParallelCoords(featuresArray) {
   var finalArray = featuresArray;
@@ -395,27 +423,6 @@ function createParallelCoords(featuresArray) {
     finalArray.push(avgSong);
   }
 
-  // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function(event) {
-    var graphContainer = document.getElementById("graph-container");
-    var graphheader = document.getElementById("graph-header");
-    //console.log(event.target.tagName)
-    if (parallelCoordsVisible && event.target === graphheader) {
-      hideParallelCoords();
-    } else if (!parallelCoordsVisible && event.target === graphheader) {
-      showParallelCoords();
-      graphContainer.style.height = window.innerHeight*0.3+40+80 + "px";
-      parallelCoordsVisible = true;
-    }
-
-    var chartHeader = document.getElementById("chart-header");
-    //console.log(event.target.tagName)
-    if (chartIsVisible && event.target === chartHeader) {
-      hideChart();
-    } else if (!chartIsVisible && event.target === chartHeader) {
-      showChart();
-    }
-  }
   var margin = {top: 30, right: 10, bottom: 10, left: 10},
     width = window.innerWidth*0.6,
     height = window.innerHeight*0.3;
