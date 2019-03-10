@@ -125,7 +125,7 @@ svg {
   font-size: 0.8em;
   background: rgba(0,0,0,0.8);
   transition: height 0.5s linear;
-  border: 1px solid rgba(0,0,0,0.2);
+  /*border: 1px solid rgba(0,0,0,0.2);*/
 }
 
 .graph-header{
@@ -156,11 +156,6 @@ svg {
   float: right;
   line-height: 40px;
   vertical-align: middle;
-}
-
-.spotify-play-button{
-  height: 80px;
-  width: 100%;
 }
 
 #search {
