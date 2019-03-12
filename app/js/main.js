@@ -1,10 +1,12 @@
+// The interactive globe is based on the implementation by "sghall"
+// https://github.com/sghall/webgl-globes
+
 import { scene, camera, renderer, canvas } from './common/scene';
 import { setEvents } from './common/setEvents';
 import { convertToXYZ, getEventCenter, geodecoder } from './common/geoHelpers';
 import { mapTexture } from './common/mapTexture';
 import { getTween, memoize } from './common/utils';
 import { feature as topojsonFeature } from 'topojson';
-// import THREE from 'THREE';
 import d3 from 'd3';
 
 var controls;
@@ -39,11 +41,7 @@ const typeHandler = function(e) {
         li.className = "list-group-item list-group-item-action";
         // var btn = document.createElement("BUTTON");
         li.addEventListener('click', function() {
-          //console.log("CLICK");
-          //console.log(this.textContent);
           var country = geo.find(this.textContent);
-          //console.log(country);
-          //console.log(country.geometry.coordinates[0][0]);
           if(country.id !== selectedCountry){
             selectedCountry = country.id;
             goToCountryCenter(country.id, country.geometry.coordinates);
@@ -83,44 +81,17 @@ d3.json('data/world.json', function (err, data) {
     return mapTexture(country, color);
   });
 
-  // Base globe with blue "water"
-  let blueMaterial = new THREE.MeshPhongMaterial({color: '#191414', transparent: true});
+  let blackMaterial = new THREE.MeshPhongMaterial({color: '#191414', transparent: true});
   let sphere = new THREE.SphereGeometry(200, segments, segments);
-  let baseGlobe = new THREE.Mesh(sphere, blueMaterial);
+  let baseGlobe = new THREE.Mesh(sphere, blackMaterial);
   baseGlobe.rotation.y = Math.PI;
   baseGlobe.addEventListener('click', onGlobeClick);
   baseGlobe.addEventListener('mousemove', onGlobeMousemove);
 
-  // add base map layer with all countries
   let worldTexture = mapTexture(countries, '#CFD8DC');
   let mapMaterial  = new THREE.MeshPhongMaterial({map: worldTexture, transparent: true});
   var baseMap = new THREE.Mesh(new THREE.SphereGeometry(200, segments, segments), mapMaterial);
   baseMap.rotation.y = Math.PI;
-
-  // HEADMAP attempt
-
-  // console.log("store");
-  // // console.log(geo.getStore());
-  // var overlayall = new THREE.Object3D();
-  // var position = new THREE.Vector2(0,0);
-  // var map;
-  // for (var key in geo.getStore()) {
-  //       // Overlay the selected country
-  //       if (map) {
-  //         console.log("copy")
-  //         renderer.copyTextureToTexture( position, map, textureCache(key, 'red' ));
-  //       } else {
-  //         console.log("create");
-  //         map = textureCache(key, 'red');
-  //       }
-  //       // root.add(overlay);
-  // }
-
-  // var material = new THREE.MeshPhongMaterial({map: map, transparent: false});
-  // var overlay = new THREE.Mesh(new THREE.SphereGeometry(201, 40, 40), material);
-  // overlay.rotation.y = Math.PI;
-  // root.add(overlay);
-
 
   // create a container node and add the two meshes
   root = new THREE.Object3D();
@@ -169,25 +140,6 @@ d3.json('data/world.json', function (err, data) {
     else{
       return;
       //console.log('no country here');
-      // Get new camera position
-      // var temp = new THREE.Mesh();
-      // temp.position.copy(convertToXYZ(latlng, 900));
-      // temp.lookAt(root.position);
-      // temp.rotateY(Math.PI);
-
-      // for (let key in temp.rotation) {
-      //   if (temp.rotation[key] - camera.rotation[key] > Math.PI) {
-      //     temp.rotation[key] -= Math.PI * 2;
-      //   } else if (camera.rotation[key] - temp.rotation[key] > Math.PI) {
-      //     temp.rotation[key] += Math.PI * 2;
-      //   }
-      // }
-
-      // var tweenPos = getTween.call(camera, 'position', temp.position);
-      // d3.timer(tweenPos);
-
-      // var tweenRot = getTween.call(camera, 'rotation', temp.rotation);
-      // d3.timer(tweenRot);
     }
 
   }
@@ -228,8 +180,6 @@ d3.json('data/world.json', function (err, data) {
 });
 
 function goto(pos, code) {
-  //console.log('goto ' + code);
-
   // Update the top200-chart
   setCountryChart(code, selectedDate);
 

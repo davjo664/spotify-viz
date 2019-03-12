@@ -140,24 +140,6 @@ function setCountryChart(countryName, date){
   }
 }
 
-function hej(){
-  var options = {
-    method: "GET",
-    headers: {
-      "Authorization": auth.token_type + " " + auth.access_token
-    }
-  };
-
-  fetch('https://api.spotify.com/v1/audio-features/' + '06AKEBrKUckW0KREUWRnvT', options)
-    .then(function(response){
-      console.log(response);
-      return response.json();
-    })
-    .then(function(obj){
-      console.log(JSON.stringify(obj));
-    });
-}
-
 function getAudioFeaturesTop100(idArray) {
   var options = {
     method: "GET",
@@ -342,6 +324,7 @@ window.onclick = function(event) {
   }
 }
 
+// Based on parallel coordiantes example by Jason Davis, from: https://bl.ocks.org/jasondavies/1341281
 var parallelCoordsVisible = false;
 function createParallelCoords(featuresArray) {
   var finalArray = featuresArray;
