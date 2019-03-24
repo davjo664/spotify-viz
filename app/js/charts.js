@@ -1,4 +1,5 @@
-const rootURL = 'http://127.0.0.1:3001';
+const rootURL = 'http://127.0.0.1:5000'; // Devolopment
+// const rootURL = 'https://spotify-wiz.herokuapp.com'; // Production
 var auth = {};
 var firstDate = new Date('2016-12-29');
 var lastDate = new Date('2019-03-07');
@@ -21,7 +22,12 @@ window.onload = function(){
 function getAccessToken(){
   var url = rootURL + '/get-access-token';
 
-  fetch(url)
+  fetch(url, {
+    mode: 'cors',
+    headers: {
+      'Access-Control-Allow-Origin':'*'
+    }
+  })
    .then(function(response){
      return response.json();
    })

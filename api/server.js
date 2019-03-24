@@ -8,18 +8,22 @@ const cors = require('cors');
 var client_id = '908fe46e46af4fd5a80f5751da42a56c';
 var client_secret = '24ceebd0b53a4b1f86d229b53789a399';
 var client_auth = btoa(client_id + ':' + client_secret); // Converts to Base64
+var app = express();
 
-console.log('Starting server');
+app.set('port', (process.env.PORT || 5000));
 
-const app = express();
-const port = 3001;
-
+//To process the data
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 app.use(cors());
 
-app.listen(port, () => console.log('App listening on port ' + port));
+app.get('/', function(request, response) {
+  response.send("Hello world");
+});
 
-//app.use(express.static('public'));
-app.use(bodyParser.json());
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
 
 app.get('/get-access-token', function(req, res){
   console.log('Incoming request @ /get-access-token');

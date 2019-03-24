@@ -7,7 +7,6 @@ import { convertToXYZ, getEventCenter, geodecoder } from './common/geoHelpers';
 import { mapTexture } from './common/mapTexture';
 import { getTween, memoize } from './common/utils';
 import { feature as topojsonFeature } from 'topojson';
-import d3 from 'd3';
 
 var controls;
 var prevRotation;

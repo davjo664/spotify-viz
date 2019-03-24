@@ -1,21 +1,33 @@
 {
-  "name": "spotvis",
+  "name": "chat-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
+  "engines": {
+    "node": ">= 8.4.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davjo664/chat-bot.git"
   },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davjo664/chat-bot/issues"
+  },
+  "homepage": "https://github.com/davjo664/chat-bot#readme",
   "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "btoa": "^1.2.1",
     "cors": "^2.8.5",
     "csvtojson": "^2.0.8",
-    "express": "^4.16.4",
     "node-fetch": "^2.3.0",
-    "nodemon": "^1.18.10",
     "require": "^2.4.20"
   }
 }
